@@ -7,6 +7,6 @@
     - name: Clonar solo el archivo necesario del repositorio
       ansible.builtin.git:
         repo: https://github.hlg.sld.cu/Nodo_Provincial/Proxy_Inverso1.git
-        dest: /tmp/semaphore/
+        dest: /tmp/semaphore/prueba
         clone: no
 
