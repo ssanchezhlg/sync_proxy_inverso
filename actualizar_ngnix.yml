@@ -1,12 +1,9 @@
 ---
-- name: Copiar archivo de configuración de Nginx
-  hosts: servers_docker
-  become: true
-
+- name: Clonar repositorio en servidor local
+  hosts: localhost
   tasks:
-    - name: Clonar solo el archivo necesario del repositorio
+    - name: Clonar el repositorio
       ansible.builtin.git:
         repo: https://github.hlg.sld.cu/Nodo_Provincial/Proxy_Inverso1.git
-        dest: /tmp/
-        clone: no
+        dest: /tmp/semaphore/prueba
 
