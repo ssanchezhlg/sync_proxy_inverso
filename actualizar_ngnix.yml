@@ -1,0 +1,11 @@
+---
+- name: Configuración de Dovecot
+  hosts: servers_docker
+  become: yes
+
+  tasks:
+    - name: Sincronizar contenido de la carpeta sites-available a /tmp
+      rsync:
+        src: sites-available/
+        dest: /home/PruebaAnsible/sites-available/
+        recursive: yes
