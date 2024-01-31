@@ -1,26 +1,16 @@
 ---
-- name: Configuración de Nginx
-  hosts: servers_docker
+- name: Copiar archivo de configuración de Nginx
+  hosts: tu_servidor
   become: true
 
   tasks:
-    - name: Clonar repositorio de configuración de Nginx
+    - name: Clonar solo el archivo necesario del repositorio
       ansible.builtin.git:
         repo: https://github.hlg.sld.cu/Nodo_Provincial/Proxy_Inverso1.git
-        dest: /root/PruebaAnsible
+        dest: /tmp
+        clone: no
 
-    - name: Copiar archivos de configuración de Nginx
+    - name: Copiar archivo de configuración
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/roles/nginx/files/sites-available/{{ item }}"
-        dest: /ruta/remota/donde/quieres/guardar/{{ item }}
-      loop:
-        - adminldap.red.hlg.sld.cu.conf
-        - adminldapcpicm.red.hlg.sld.cu.conf
-      notify:
-        - Reiniciar Nginx
-
-  handlers:
-    - name: Reiniciar Nginx
-      ansible.builtin.service:
-        name: nginx
-        state: restarted
+        src: "/tmp/sites-available/adminldap.red.hlg.sld.cu.conf"
+        dest: "/root/PruebaAnsible/adminldap.red.hlg.sld.cu.conf"
