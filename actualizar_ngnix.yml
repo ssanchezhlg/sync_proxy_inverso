@@ -4,7 +4,9 @@
   become: yes
 
   tasks:
-    - name: Copiar archivo de configuración 
-      copy:
-        src: sites-available/adminldap.red.hlg.sld.cu.conf
-        dest: /tmp
+    - name: Sincronizar contenido de la carpeta sites-available a /tmp
+      synchronize:
+        src: sites-available/
+        dest: /tmp/sites-available
+        recursive: yes
+
