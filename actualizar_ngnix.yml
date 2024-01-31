@@ -4,9 +4,10 @@
   become: yes
 
   tasks:
-    - name: Sincronizar contenido de la carpeta sites-available a /tmp
-      synchronize:
+    - name: Copiar contenido de la carpeta sites-available a /tmp
+      copy:
         src: sites-available/
-        dest: /tmp/sites-available
-        recursive: yes
+        dest: /tmp/
+      notify:
+        - Reiniciar Dovecot
 
