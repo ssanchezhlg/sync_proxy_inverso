@@ -1,16 +1,10 @@
 ---
-- name: Configuración de Postfix
+- name: Configuración de Dovecot
   hosts: servers_docker
   become: yes
 
   tasks:
-    - name: Verificar el estado del archivo de configuración
-      stat:
-        path: /tmp/adminldap.red.hlg.sld.cu.conf
-      register: config_stat
-
-    - name: Copiar archivo de configuración de Postfix si ha cambiado
+    - name: Copiar archivo de configuración 
       copy:
         src: sites-available/adminldap.red.hlg.sld.cu.conf
-        dest: /tmp/adminldap.red.hlg.sld.cu.conf
-      when: config_stat.stat.ctime < config_stat.stat.mtime
+        dest: /tmp
