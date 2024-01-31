@@ -1,6 +1,6 @@
 ---
 - name: Copiar archivo de configuración de Nginx
-  hosts: tu_servidor
+  hosts: servers_docker
   become: true
 
   tasks:
