@@ -5,7 +5,7 @@
 
   tasks:
     - name: Sincronizar contenido de la carpeta sites-available a /tmp
-      copy:
+      synchronize:
         src: sites-available/
         dest: /tmp/sites-available
         recursive: yes
