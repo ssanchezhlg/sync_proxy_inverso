@@ -7,7 +7,4 @@
     - name: Copiar contenido de la carpeta sites-available a /tmp
       copy:
         src: sites-available/
-        dest: /tmp/
-      notify:
-        - Reiniciar Dovecot
-
+        dest: /tmp/sites-available/
