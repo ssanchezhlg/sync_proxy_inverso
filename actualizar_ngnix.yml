@@ -1,0 +1,26 @@
+---
+- name: Configuración de Proxy Inverso 1
+  hosts: servers_docker
+  become: yes
+
+  tasks:
+    - name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
+      copy:
+        src: sites-available/
+        dest: /home/PruebaAnsible/sites-available/
+
+    - name: Obtener la lista de archivos en sites-available
+      find:
+        paths: /home/PruebaAnsible/sites-available
+        patterns: "*"
+      register: files_to_link
+
+    - name: Crear enlaces simbólicos en sites-enabled
+      file:
+        src: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
+        dest: "/home/PruebaAnsible/sites-enabled/{{ item.path | basename }}"
+        state: link
+      with_items: "{{ files_to_link.files }}"
+
+    - name: Eliminar enlaces simbólicos no correspondientes en sites-enabled
+      shell: "find /home/PruebaAnsible/sites-enabled/ -type l -exec test ! -e {{ playbook_dir }}/sites-available/{} \\; -delete"
