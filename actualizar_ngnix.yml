@@ -22,7 +22,7 @@
 
     - name: Copiar archivos modificados a /home/PruebaAnsible/sites-available
       copy:
-        src: "{{ item.path }}"
+        src: "/tmp/sites-available/{{ item.path | basename }}"
         dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
       with_items: "{{ modified_files }}"
 
