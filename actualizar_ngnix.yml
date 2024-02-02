@@ -15,4 +15,4 @@
         path: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
         state: absent
       loop: "{{ lookup('fileglob', '/home/PruebaAnsible/sites-available/*') }}"
-      when: not (repo_files.files | map(attribute='path') | any == "/home/PruebaAnsible/sites-available/{{ item.path | basename }}")
+      when: not (repo_files.files | map(attribute='path') | any == "sites-available/{{ item.path | basename }}")
