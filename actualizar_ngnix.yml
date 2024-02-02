@@ -9,3 +9,16 @@
         src: "/tmp/sites-available/"
         dest: "/home/PruebaAnsible/sites-available/"
         remote_src: yes
+
+    - name: Identificar archivos que deben eliminarse
+      find:
+        paths: "/home/PruebaAnsible/sites-available/"
+        patterns: "*"
+      register: current_files
+
+    - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ current_files.files | difference(tmp_files.files) }}"
+      when: current_files.files | difference(tmp_files.files) | length > 0
