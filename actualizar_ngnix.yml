@@ -5,8 +5,6 @@
 
   tasks:
     - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
-      synchronize:
+      copy:
         src: "/tmp/sites-available/"
         dest: "/home/PruebaAnsible/sites-available/"
-        mode: pull
-      delegate_to: localhost
