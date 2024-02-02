@@ -21,8 +21,14 @@
         deleted_files: "{{ current_files.files | rejectattr('path', 'in', '/tmp/sites-available/') | list }}"
 
     - name: Copiar archivos modificados a /home/PruebaAnsible/sites-available
-      copy:
-        src: "/tmp/sites-available/{{ item.path | basename }}"
-        dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
-      with_items: "{{ modified_files }}"
+      synchronize:
+        src: "/tmp/sites-available/"
+        dest: "/home/PruebaAnsible/sites-available/"
+        mode: pull
+      delegate_to: localhost
 
+    - name: Eliminar archivos locales que fueron eliminados en la copia
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ deleted_files }}"
