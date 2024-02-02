@@ -4,21 +4,9 @@
   become: yes
 
   tasks:
-    - name: Clonar el repositorio remoto
-      git:
-        repo: "{{ inventory_hostname }}/Nodo_Provincial/Proxy_Inverso1.git"
-        dest: /tmp
-        version: main  # Ajusta la rama o versión según sea necesario
-
-    - name: Obtener la lista de archivos en sites-available del repositorio
+    - name: Obtener la lista de archivos en sites-available del repositorio remoto
       find:
-        paths: /tmp/sites-available
-        patterns: "*"
-      register: repo_files
-
-    - name: Obtener la lista de archivos locales en sites-available
-      find:
-        paths: /home/PruebaAnsible/sites-available
+        paths: sites-available/
         patterns: "*"
       register: local_files
 
@@ -27,4 +15,4 @@
         path: "{{ item.path }}"
         state: absent
       with_items: "{{ local_files.files }}"
-      when: "'/home/PruebaAnsible/sites-available/' + item.path | basename not in repo_files.files | map(attribute='path') | map('regex_replace', '$', '')"
+      when: "'/home/PruebaAnsible/sites-available/' + item.path | basename not in semaphore_git_files.files | map(attribute='path') | map('regex_replace', '$', '')"
