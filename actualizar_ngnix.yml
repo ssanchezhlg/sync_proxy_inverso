@@ -5,25 +5,7 @@
 
   tasks:
     - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
-      copy:
-        src: "/tmp/sites-available/"
-        dest: "/home/PruebaAnsible/sites-available/"
-        remote_src: yes
+      shell: "cp -R /tmp/sites-available/* /home/PruebaAnsible/sites-available/"
 
     - name: Eliminar archivos locales que no existen en /tmp/sites-available/
-      find:
-        paths: "/home/PruebaAnsible/sites-available/"
-        patterns: "*"
-      register: local_files
-
-    - name: Verificar archivos en /tmp/sites-available/
-      find:
-        paths: "/tmp/sites-available/"
-        patterns: "*"
-      register: tmp_files
-
-    - name: Eliminar archivos locales que no existen en /tmp/sites-available/
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ local_files.files | rejectattr('path', 'in', tmp_files.files | map(attribute='path')) }}"
+      shell: "find /home/PruebaAnsible/sites-available/ -type f -exec sh -c 'if [ ! -e \"/tmp/sites-available/$(basename {})\" ]; then rm -f {}; fi' \\;"
