@@ -26,8 +26,3 @@
         dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
       with_items: "{{ modified_files }}"
 
-    - name: Eliminar archivos locales que fueron eliminados en la copia
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ deleted_files }}"
