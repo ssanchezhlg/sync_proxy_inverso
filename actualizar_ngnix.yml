@@ -1,18 +1,30 @@
 ---
-- name: Eliminar archivos locales que no existen en el repositorio
+- name: Eliminar archivos locales eliminados en el repositorio remoto
   hosts: servers_docker
   become: yes
 
   tasks:
+    - name: Clonar el repositorio remoto
+      git:
+        repo: "{{ inventory_hostname }}/Nodo_Provincial/Proxy_Inverso1.git"
+        dest: /tmp
+        version: main  # Ajusta la rama o versión según sea necesario
+
     - name: Obtener la lista de archivos en sites-available del repositorio
       find:
-        paths: sites-available/
+        paths: /tmp/sites-available
         patterns: "*"
       register: repo_files
 
+    - name: Obtener la lista de archivos locales en sites-available
+      find:
+        paths: /home/PruebaAnsible/sites-available
+        patterns: "*"
+      register: local_files
+
     - name: Eliminar archivos locales que no existen en el repositorio
       file:
-        path: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
+        path: "{{ item.path }}"
         state: absent
-      loop: "{{ lookup('fileglob', '/home/PruebaAnsible/sites-available/*') }}"
-      when: not (repo_files.files | map(attribute='path') | any == "sites-available/{{ item.path | basename }}")
+      with_items: "{{ local_files.files }}"
+      when: "'/home/PruebaAnsible/sites-available/' + item.path | basename not in repo_files.files | map(attribute='path') | map('regex_replace', '$', '')"
