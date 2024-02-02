@@ -17,8 +17,8 @@
 
     - name: Identificar archivos modificados y eliminados
       set_fact:
-        modified_files: "{{ current_files.files | selectattr('path', 'in', copied_files.files | map(attribute='path')) | list }}"
-        deleted_files: "{{ current_files.files | rejectattr('path', 'in', copied_files.files | map(attribute='path')) | list }}"
+        modified_files: "{{ current_files.files | selectattr('path', 'in', '/tmp/sites-available/') | list }}"
+        deleted_files: "{{ current_files.files | rejectattr('path', 'in', '/tmp/sites-available/') | list }}"
 
     - name: Copiar archivos modificados a /home/PruebaAnsible/sites-available
       copy:
