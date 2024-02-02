@@ -8,3 +8,4 @@
       copy:
         src: "/tmp/sites-available/"
         dest: "/home/PruebaAnsible/sites-available/"
+        remote_src: yes
