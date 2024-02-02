@@ -12,3 +12,4 @@
 
     - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
       shell: "comm -23 <(ls /home/PruebaAnsible/sites-available/ | sort) <(ls /tmp/sites-available/ | sort) | xargs -I {} rm -f /home/PruebaAnsible/sites-available/{}"
+
