@@ -6,5 +6,5 @@
   tasks:
     - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
       copy:
-        src: "/tmp/sites-available/"
+        src: "/tmp/sites-available"
         dest: "/home/PruebaAnsible/sites-available/"
