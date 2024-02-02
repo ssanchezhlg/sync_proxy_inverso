@@ -27,4 +27,4 @@
         path: "/home/PruebaAnsible/sites-enabled/{{ item.path | basename }}"
         state: absent
       with_items: "{{ files_to_link.files }}"
-      when: "'/home/PruebaAnsible/sites-enabled/' + item.path | basename not in files_to_link.files | map(attribute='path') | map('regex_replace', '$', '') }}"
+      when: "'/home/PruebaAnsible/sites-enabled/' + item.path | basename not in files_to_link.files | map(attribute='path') | map('regex_replace', '$', '')' == 'True'"
