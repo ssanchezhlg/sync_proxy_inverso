@@ -10,6 +10,20 @@
         dest: "/home/PruebaAnsible/sites-available/"
         remote_src: yes
 
-    - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
-      shell: "comm -23 <(ls /home/PruebaAnsible/sites-available/ | sort) <(ls /tmp/sites-available/ | sort) | xargs -I {} rm -f /home/PruebaAnsible/sites-available/{}"
+    - name: Identificar archivos locales que deben eliminarse
+      find:
+        paths: "/home/PruebaAnsible/sites-available/"
+        patterns: "*"
+      register: current_files
 
+    - name: Identificar archivos en /tmp/sites-available/
+      find:
+        paths: "/tmp/sites-available/"
+        patterns: "*"
+      register: tmp_files
+
+    - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ current_files.files | rejectattr('path', 'in', tmp_files.files | map(attribute='path')) }}"
