@@ -24,7 +24,6 @@
 
     - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
       file:
-        path: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
+        path: "{{ item.path }}"
         state: absent
       with_items: "{{ current_files.files | difference(tmp_files.files) }}"
-      when: current_files.files | difference(tmp_files.files) | length > 0
