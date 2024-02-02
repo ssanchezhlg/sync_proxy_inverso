@@ -10,20 +10,23 @@
         dest: "/home/PruebaAnsible/sites-available/"
         remote_src: yes
 
-    - name: Identificar archivos locales que deben eliminarse
+    - name: Sincronizar /home/PruebaAnsible/sites-available/ con /tmp/sites-available/ (eliminando archivos locales no existentes en la fuente)
+      command: rsync -av --delete /home/PruebaAnsible/sites-available/ /tmp/sites-available/
+
+    - name: Verificar archivos locales en /home/PruebaAnsible/sites-available/
       find:
         paths: "/home/PruebaAnsible/sites-available/"
         patterns: "*"
-      register: current_files
+      register: local_files
 
-    - name: Identificar archivos en /tmp/sites-available/
+    - name: Verificar archivos en /tmp/sites-available/
       find:
         paths: "/tmp/sites-available/"
         patterns: "*"
       register: tmp_files
 
-    - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
+    - name: Eliminar archivos locales que no existen en /tmp/sites-available/
       file:
         path: "{{ item.path }}"
         state: absent
-      with_items: "{{ current_files.files | rejectattr('path', 'in', tmp_files.files | map(attribute='path')) }}"
+      with_items: "{{ local_files.files | rejectattr('path', 'in', tmp_files.files | map(attribute='path')) }}"
