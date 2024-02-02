@@ -5,7 +5,10 @@
 
   tasks:
     - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
-      command: "cp -R /tmp/sites-available/* /home/PruebaAnsible/sites-available/"
+      copy:
+        src: "/tmp/sites-available/"
+        dest: "/home/PruebaAnsible/sites-available/"
+        remote_src: yes
 
     - name: Eliminar archivos locales que no existen en /tmp/sites-available/
       find:
@@ -20,6 +23,7 @@
       register: tmp_files
 
     - name: Eliminar archivos locales que no existen en /tmp/sites-available/
-      command: "rm -f {{ item.path }}"
+      file:
+        path: "{{ item.path }}"
+        state: absent
       with_items: "{{ local_files.files | rejectattr('path', 'in', tmp_files.files | map(attribute='path')) }}"
-
