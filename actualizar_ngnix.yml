@@ -5,28 +5,8 @@
 
   tasks:
     - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
-      copy:
+      synchronize:
         src: "/tmp/sites-available/"
         dest: "/home/PruebaAnsible/sites-available/"
-        remote_src: yes
-
-    - name: Sincronizar /home/PruebaAnsible/sites-available/ con /tmp/sites-available/ (eliminando archivos locales no existentes en la fuente)
-      command: rsync -av --delete /home/PruebaAnsible/sites-available/ /tmp/sites-available/
-
-    - name: Verificar archivos locales en /home/PruebaAnsible/sites-available/
-      find:
-        paths: "/home/PruebaAnsible/sites-available/"
-        patterns: "*"
-      register: local_files
-
-    - name: Verificar archivos en /tmp/sites-available/
-      find:
-        paths: "/tmp/sites-available/"
-        patterns: "*"
-      register: tmp_files
-
-    - name: Eliminar archivos locales que no existen en /tmp/sites-available/
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ local_files.files | rejectattr('path', 'in', tmp_files.files | map(attribute='path')) }}"
+        delete: yes
+        recursive: yes
