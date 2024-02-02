@@ -5,8 +5,21 @@
 
   tasks:
     - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
-      synchronize:
-        src: "/tmp/sites-available/"
-        dest: "/home/PruebaAnsible/sites-available/"
-        delete: yes
-        recursive: yes
+      command: "cp -R /tmp/sites-available/* /home/PruebaAnsible/sites-available/"
+
+    - name: Eliminar archivos locales que no existen en /tmp/sites-available/
+      find:
+        paths: "/home/PruebaAnsible/sites-available/"
+        patterns: "*"
+      register: local_files
+
+    - name: Verificar archivos en /tmp/sites-available/
+      find:
+        paths: "/tmp/sites-available/"
+        patterns: "*"
+      register: tmp_files
+
+    - name: Eliminar archivos locales que no existen en /tmp/sites-available/
+      command: "rm -f {{ item.path }}"
+      with_items: "{{ local_files.files | rejectattr('path', 'in', tmp_files.files | map(attribute='path')) }}"
+
