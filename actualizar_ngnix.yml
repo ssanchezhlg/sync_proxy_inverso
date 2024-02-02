@@ -1,30 +1,18 @@
 ---
-- name: Configuración de Proxy Inverso 1
+- name: Eliminar archivos locales que no existen en el repositorio
   hosts: servers_docker
   become: yes
 
   tasks:
-    - name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
-      copy:
-        src: sites-available/
-        dest: /home/PruebaAnsible/sites-available/
-
-    - name: Obtener la lista de archivos en sites-available
+    - name: Obtener la lista de archivos en sites-available del repositorio
       find:
-        paths: /home/PruebaAnsible/sites-available
+        paths: sites-available/
         patterns: "*"
-      register: files_to_link
+      register: repo_files
 
-    - name: Crear enlaces simbólicos en sites-enabled
+    - name: Eliminar archivos locales que no existen en el repositorio
       file:
-        src: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
-        dest: "/home/PruebaAnsible/sites-enabled/{{ item.path | basename }}"
-        state: link
-      with_items: "{{ files_to_link.files }}"
-
-    - name: Eliminar archivos en sites-enabled que no existen en sites-available
-      file:
-        path: "/home/PruebaAnsible/sites-enabled/{{ item.path | basename }}"
+        path: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
         state: absent
-      with_items: "{{ files_to_link.files }}"
-      when: "'/home/PruebaAnsible/sites-enabled/' + item.path | basename not in files_to_link.files | map(attribute='path') | map('regex_replace', '$', '')' == 'True'"
+      loop: "{{ lookup('fileglob', '/home/PruebaAnsible/sites-available/*') }}"
+      when: not (repo_files.files | map(attribute='path') | any == "/home/PruebaAnsible/sites-available/{{ item.path | basename }}")
