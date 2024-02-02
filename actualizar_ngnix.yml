@@ -4,7 +4,7 @@
   become: yes
 
   tasks:
-    - name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
+    - name: Copiar contenido de la carpeta sites-available al servidor Nginx1
       copy:
         src: sites-available/
         dest: /home/PruebaAnsible/sites-available/
@@ -23,4 +23,4 @@
       with_items: "{{ files_to_link.files }}"
 
     - name: Eliminar enlaces simbólicos no correspondientes en sites-enabled
-      shell: "find /home/PruebaAnsible/sites-enabled/ -type l -exec sh -c 'target=\"$(readlink -f $0)\"; test ! -e {{ playbook_dir }}/sites-available/\"$(basename $target)\" && rm $target' {} \\;"
+      shell: "find /home/PruebaAnsible/sites-enabled/ -type l -exec sh -c 'target=\"$(readlink -f $0)\"; test ! -e {{ playbook_dir }}/sites-available/\"$(basename $target)\" && rm $0' {} \\;"
