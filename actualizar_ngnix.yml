@@ -1,18 +1,33 @@
 ---
-- name: Eliminar archivos locales eliminados en el repositorio remoto
+- name: Actualizar configuraciones de Proxy Inverso
   hosts: servers_docker
   become: yes
 
   tasks:
-    - name: Obtener la lista de archivos en sites-available del repositorio remoto
-      find:
-        paths: sites-available/
-        patterns: "*"
-      register: local_files
+    - name: Copiar contenido de la carpeta sites-available a un directorio temporal
+      copy:
+        src: sites-available/
+        dest: /tmp/sites-available/
 
-    - name: Eliminar archivos locales que no existen en el repositorio
+    - name: Obtener la lista de archivos actuales en sites-available
+      find:
+        paths: /home/PruebaAnsible/sites-available
+        patterns: "*"
+      register: current_files
+
+    - name: Identificar archivos modificados y eliminados
+      set_fact:
+        modified_files: "{{ current_files.files | selectattr('path', 'in', copied_files.files | map(attribute='path')) | list }}"
+        deleted_files: "{{ current_files.files | rejectattr('path', 'in', copied_files.files | map(attribute='path')) | list }}"
+
+    - name: Copiar archivos modificados a /home/PruebaAnsible/sites-available
+      copy:
+        src: "{{ item.path }}"
+        dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
+      with_items: "{{ modified_files }}"
+
+    - name: Eliminar archivos locales que fueron eliminados en la copia
       file:
         path: "{{ item.path }}"
         state: absent
-      with_items: "{{ local_files.files }}"
-      when: "'/home/PruebaAnsible/sites-available/' + item.path | basename not in semaphore_git_files.files | map(attribute='path') | map('regex_replace', '$', '')"
+      with_items: "{{ deleted_files }}"
