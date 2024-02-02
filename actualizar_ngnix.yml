@@ -10,11 +10,17 @@
         dest: "/home/PruebaAnsible/sites-available/"
         remote_src: yes
 
-    - name: Identificar archivos que deben eliminarse
+    - name: Identificar archivos en /home/PruebaAnsible/sites-available/ que deben eliminarse
       find:
         paths: "/home/PruebaAnsible/sites-available/"
         patterns: "*"
       register: current_files
+
+    - name: Identificar archivos en /tmp/sites-available/
+      find:
+        paths: "/tmp/sites-available/"
+        patterns: "*"
+      register: tmp_files
 
     - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
       file:
