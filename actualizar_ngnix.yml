@@ -4,31 +4,9 @@
   become: yes
 
   tasks:
-    - name: Copiar contenido de la carpeta sites-available a un directorio temporal
-      copy:
-        src: sites-available/
-        dest: /tmp/sites-available/
-
-    - name: Obtener la lista de archivos actuales en sites-available
-      find:
-        paths: /home/PruebaAnsible/sites-available
-        patterns: "*"
-      register: current_files
-
-    - name: Identificar archivos modificados y eliminados
-      set_fact:
-        modified_files: "{{ current_files.files | selectattr('path', 'in', '/tmp/sites-available/') | list }}"
-        deleted_files: "{{ current_files.files | rejectattr('path', 'in', '/tmp/sites-available/') | list }}"
-
-    - name: Copiar archivos modificados a /home/PruebaAnsible/sites-available
+    - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
       synchronize:
         src: "/tmp/sites-available/"
         dest: "/home/PruebaAnsible/sites-available/"
         mode: pull
       delegate_to: localhost
-
-    - name: Eliminar archivos locales que fueron eliminados en la copia
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ deleted_files }}"
