@@ -9,23 +9,4 @@
         src: sites-available/
         dest: /tmp/sites-available/
 
-  tasks:
-    - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
-      shell: "cp -R /tmp/sites-available/* /home/PruebaAnsible/sites-available/"
-
-    - name: Eliminar archivos locales que no existen en /tmp/sites-available/
-      shell: "find /home/PruebaAnsible/sites-available/ -type f -exec sh -c 'if [ ! -e \"/tmp/sites-available/$(basename {})\" ]; then rm -f {}; fi' \\;"
-
-
-    - name: Obtener la lista de archivos en sites-available
-      find:
-        paths: /home/PruebaAnsible/sites-available
-        patterns: "*"
-      register: files_to_link
-
-    - name: Crear enlaces simbólicos en sites-enabled
-      file:
-        src: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
-        dest: "/home/PruebaAnsible/sites-enabled/{{ item.path | basename }}"
-        state: link
-      with_items: "{{ files_to_link.files }}"
+ 
