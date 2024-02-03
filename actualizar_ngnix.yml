@@ -9,4 +9,8 @@
         src: sites-available/
         dest: /tmp/sites-available/
 
+  tasks:
+    - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
+      shell: "cp -R /tmp/sites-available/* /home/PruebaAnsible/sites-available/"
+
  
