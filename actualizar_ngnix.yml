@@ -12,5 +12,5 @@
     - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
       shell: "cp -R /tmp/sites-available/* /home/PruebaAnsible/sites-available/"
 
-    - shell: rm -R /tmp/sites-available
+#    - shell: rm -R /tmp/sites-available
  
