@@ -1,0 +1,18 @@
+---
+- name: Actualizar configuraciones de Proxy Inverso
+  hosts: servers_docker
+  become: yes
+
+  tasks:
+    - name: Identificar archivos modificados en /tmp/sites-available/
+      find:
+        paths: "/tmp/sites-available/"
+        patterns: "*"
+      register: tmp_files
+
+    - name: Copiar solo archivos modificados de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
+      copy:
+        src: "{{ item.path }}"
+        dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
+      with_items: "{{ tmp_files.files }}"
+      when: item.path | basename not in current_files.files | map(attribute='path') | list
