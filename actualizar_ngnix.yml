@@ -4,27 +4,8 @@
   become: yes
 
   tasks:
-    - name: Identificar archivos modificados en /tmp/sites-available/
-      find:
-        paths: "/tmp/sites-available/"
-        patterns: "*"
-      register: tmp_files
+    - name: Copiar contenido de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
+      shell: "cp -r /tmp/sites-available/* /home/PruebaAnsible/sites-available/"
 
-    - name: Obtener la lista de archivos actuales en /home/PruebaAnsible/sites-available/
-      find:
-        paths: "/home/PruebaAnsible/sites-available/"
-        patterns: "*"
-      register: current_files
-
-    - name: Copiar solo archivos modificados de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
-      copy:
-        src: "{{ item.path }}"
-        dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
-      with_items: "{{ tmp_files.files }}"
-      when: (tmp_files.matched > 0) and ('/home/PruebaAnsible/sites-available/' + item.path | basename) not in current_files.files | map(attribute='path')
-
- #   - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
- #     file:
- #       path: "{{ item.path }}"
- #       state: absent
- #     with_items: "{{ current_files.files | difference(tmp_files.files) | list }}"
+    - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
+      shell: "comm -23 <(ls /home/PruebaAnsible/sites-available/ | sort) <(ls /tmp/sites-available/ | sort) | xargs -I {} rm -f /home/PruebaAnsible/sites-available/{}"
