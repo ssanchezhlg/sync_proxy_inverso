@@ -23,8 +23,8 @@
       with_items: "{{ tmp_files.files }}"
       when: (tmp_files.matched > 0) and ('/home/PruebaAnsible/sites-available/' + item.path | basename) not in current_files.files | map(attribute='path')
 
-    - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ current_files.files | difference(tmp_files.files) | list }}"
+ #   - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
+ #     file:
+ #       path: "{{ item.path }}"
+ #       state: absent
+ #     with_items: "{{ current_files.files | difference(tmp_files.files) | list }}"
