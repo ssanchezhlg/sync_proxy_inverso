@@ -4,6 +4,12 @@
   become: yes
 
   tasks:
+    - name: Identificar archivos actuales en /home/PruebaAnsible/sites-available/
+      find:
+        paths: "/home/PruebaAnsible/sites-available/"
+        patterns: "*"
+      register: current_files
+
     - name: Identificar archivos modificados en /tmp/sites-available/
       find:
         paths: "/tmp/sites-available/"
