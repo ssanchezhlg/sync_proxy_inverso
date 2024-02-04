@@ -10,9 +10,9 @@
         patterns: "*"
       register: tmp_files
 
-    - name: Copiar solo archivos modificados
+    - name: Copiar solo archivos modificados de /tmp/sites-available/ a /home/PruebaAnsible/sites-available/
       copy:
-        src: "/tmp/sites-available"
+        src: "{{ item.path }}"
         dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
       with_items: "{{ tmp_files.files }}"
-      when: not (item.path | basename is regex_replace('\\.\\./', '') | regex_replace('/$', '') | stat | failed)
+      when: not (item.path | basename is regex_replace('\\.\\./', '') | regex_replace('/$', '') | file(path='{{ item.path | basename }}') | get_md5 == item.md5)
