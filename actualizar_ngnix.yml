@@ -23,8 +23,8 @@
       with_items: "{{ tmp_files.files }}"
       when: (item.path | basename) not in (current_files.files | map(attribute='path') | map('basename'))
 
-    - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ current_files.files | difference(tmp_files.files) }}"
+ #   - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
+ #     file:
+ #       path: "{{ item.path }}"
+ #       state: absent
+ #     with_items: "{{ current_files.files | difference(tmp_files.files) }}"
