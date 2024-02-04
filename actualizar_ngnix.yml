@@ -15,4 +15,4 @@
         src: "{{ item.path }}"
         dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
       with_items: "{{ tmp_files.files }}"
-      when: item.path | basename not in current_files.files | map(attribute='path') | list
+      when: not (item.path | basename is regex_replace('\\.\\./', '') | regex_replace('/$', '') | stat | failed)
