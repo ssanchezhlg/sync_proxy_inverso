@@ -15,4 +15,10 @@
         src: "{{ item.path }}"
         dest: "/home/PruebaAnsible/sites-available/{{ item.path | basename }}"
       with_items: "{{ tmp_files.files }}"
-      when: not (item.path | basename is regex_replace('\\.\\./', '') | regex_replace('/$', '') | stat | failed) and (item.path | basename is regex_replace('\\.\\./', '') | regex_replace('/$', '') | stat).mtime > (item.mtime | to_datetime)
+      when: (item.path | basename) not in (current_files.files | map(attribute='path') | map('basename'))
+
+    - name: Eliminar archivos locales que fueron eliminados en /tmp/sites-available/
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ current_files.files | difference(tmp_files.files) }}"
