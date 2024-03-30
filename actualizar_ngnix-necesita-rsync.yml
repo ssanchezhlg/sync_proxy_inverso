@@ -1,16 +1,15 @@
 ---
-- name: Configuración de Dovecot
+- name: Verificar funcionamiento de rsync
   hosts: ServerProxyInverso50
-  become: yes
+  become: no
 
   tasks:
-    - name: Sincronizar contenido bidireccionalmente usando rsync
-      synchronize:
-        src: sites-available/
-        dest: /home/PruebaAnsible/sites-available/
-        recursive: yes
-        delete: yes
-        rsync_opts:
-          - "--archive"
-          - "--delete"
+    - name: Ejecutar comando rsync
+      command: "rsync --version"
+      register: rsync_output
+
+    - name: Mostrar resultado
+      debug:
+        var: rsync_output.stdout_lines
+
 
