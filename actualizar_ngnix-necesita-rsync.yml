@@ -1,15 +1,14 @@
 ---
-- name: Verificar funcionamiento de rsync
+- name: Copiar carpeta dentro del mismo servidor
   hosts: ServerProxyInverso50
-  become: no
+  become: yes
 
   tasks:
-    - name: Ejecutar comando rsync
-      command: "rsync --version"
-      register: rsync_output
+    - name: Copiar carpeta
+      copy:
+        src: /mnt/rsync-copia/test1
+        dest: /mnt/rsync-destino
+        remote_src: yes
 
-    - name: Mostrar resultado
-      debug:
-        var: rsync_output.stdout_lines
 
 
