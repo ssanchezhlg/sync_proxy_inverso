@@ -4,9 +4,12 @@
   become: yes
 
   tasks:
-    - name: Sincronizar contenido bidireccionalmente
+    - name: Sincronizar contenido bidireccionalmente usando rsync
       synchronize:
         src: sites-available/
         dest: /home/PruebaAnsible/sites-available/
         recursive: yes
         delete: yes
+        rsync_opts:
+          - "--archive"
+          - "--delete"
