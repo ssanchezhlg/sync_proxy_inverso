@@ -1,6 +1,6 @@
 ---
 - name: Configuración de Dovecot
-  hosts: servers_docker
+  hosts: ServerProxyInverso50
   become: yes
 
   tasks:
