@@ -1,6 +1,6 @@
 ---
 - name: Configuración de Dovecot
-  hosts: 10.10.10.110
+  hosts: ServerProxyInverso50
   become: yes
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
