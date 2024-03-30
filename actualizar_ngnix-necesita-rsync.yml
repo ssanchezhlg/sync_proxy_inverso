@@ -2,8 +2,6 @@
 - name: Configuración de Dovecot
   hosts: ServerProxyInverso50
   become: yes
-  vars:
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 
   tasks:
     - name: Sincronizar contenido bidireccionalmente usando rsync
@@ -15,6 +13,4 @@
         rsync_opts:
           - "--archive"
           - "--delete"
-          - "-e 'ssh {{ ansible_ssh_common_args }}'"
-
 
