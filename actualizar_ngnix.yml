@@ -1,6 +1,6 @@
 ---
 - name: Configuración de Proxy Inverso
-  hosts: servers_docker
+  hosts: Server_ProxyInversos
   become: yes
 
   tasks:
