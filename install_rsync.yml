@@ -1,0 +1,5 @@
+- name: install rsync on the ansible controller
+  connection: local
+  package:
+    name: rsync
+    state: present
