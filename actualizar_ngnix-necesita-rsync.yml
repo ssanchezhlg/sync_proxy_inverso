@@ -9,7 +9,7 @@
         src: sites-available/
         dest: /mnt/rsync-destino-pruebas/
         rsync_opts:
-          - "-e 'ssh -i /ruta/a/tu/llave_privada.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'"
+          - "-e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'"
 
 
 
