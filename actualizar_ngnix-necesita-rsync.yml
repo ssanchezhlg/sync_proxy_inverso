@@ -1,14 +1,16 @@
 ---
-- name: Copiar carpeta dentro del mismo servidor
+- name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
   hosts: ServerProxyInverso50
   become: yes
 
   tasks:
-    - name: Copiar carpeta
-      copy:
-        src: /mnt/rsync-copia/test1
-        dest: /mnt/rsync-destino
-        remote_src: yes
+    - name: Copiar carpeta usando rsync
+      synchronize:
+        src: sites-available/
+        dest: /mnt/rsync-destino-pruebas/
+        rsync_opts:
+          - "-e 'ssh -i /ruta/a/tu/llave_privada.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'"
+
 
 
 
