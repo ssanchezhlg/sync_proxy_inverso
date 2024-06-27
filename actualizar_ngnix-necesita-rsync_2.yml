@@ -25,3 +25,4 @@
         dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
       with_items: "{{ files_to_link.files }}"	
+      
