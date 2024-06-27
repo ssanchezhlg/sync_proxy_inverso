@@ -12,3 +12,18 @@
         checksum: yes
         archive: yes
         compress: yes
+
+    - name: Crear enlaces simbólicos en sites-enabled
+      file:
+        src: /home/PruebaAnsible/Rsync/{{ item }}
+        dest: /etc/nginx/sites-enabled/{{ item }}
+        state: link
+      loop: "{{ lookup('fileglob', '/home/PruebaAnsible/Rsync/*') | basename }}"
+      notify: Reiniciar Nginx
+
+  handlers:
+    - name: Reiniciar Nginx
+      service:
+        name: nginx
+        state: restarted
+
