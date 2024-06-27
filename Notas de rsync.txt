@@ -32,6 +32,7 @@ en nombre le pondremos: none
 
 en las variables: {}
 
+
 2. Agregamos el Repositories
 
 le agregamos el nombre: sync_proxy_inverso

@@ -95,3 +95,9 @@ Este proyecto utiliza Ansible para sincronizar los archivos de configuración de
 ## Contribución
 
 Si encuentras algún problema o tienes sugerencias de mejora, no dudes en abrir un issue o enviar un pull request en el repositorio de GitHub.
+
+
+
+
+
+<span>![</span><span>Aquí la descripción de la imagen por si no carga</span><span>]</span><span>(</span><span>https://github.local.softnet.cu/ssanchezhlg/sync_proxy_inverso/raw/commit/544a8e1f0ae3b9bc87024af66e3ad3f9446c452e/img/variable.png</span><span>)</span>
