@@ -12,17 +12,16 @@
         checksum: yes
         archive: yes
         compress: yes
+		
+    - name: Obtener la lista de archivos en sites-available
+      find:
+        paths: /home/PruebaAnsible/Rsync/sites-available
+        patterns: "*"
+      register: files_to_link
 
     - name: Crear enlaces simbólicos en sites-enabled
       file:
-        src: /home/PruebaAnsible/Rsync/sites-available/{{ item }}
-        dest: /home/PruebaAnsible/Rsync/sites-enabled/{{ item }}
+        src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
+        dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
-      loop: "{{ lookup('fileglob', '/home/PruebaAnsible/Rsync/sites-available/*') | map('basename') | list }}"
-      notify: Reiniciar Nginx
-
-#  handlers:
-#    - name: Reiniciar Nginx
-#      service:
-#        name: nginx
-#        state: restarted
+      with_items: "{{ files_to_link.files }}"	
