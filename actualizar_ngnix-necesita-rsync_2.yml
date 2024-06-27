@@ -14,13 +14,13 @@
         compress: yes
         times: yes
 
-    - name: Establecer permisos en los archivos copiados
-      file:
-        path: /home/PruebaAnsible/Rsync/sites-available
-        path: /home/PruebaAnsible/Rsync/sites-enabled
-        mode: "u=rw,g=r,o=r"
-        owner: root
-        recurse: yes     
+#    - name: Establecer permisos en los archivos copiados
+#      file:
+#        path: /home/PruebaAnsible/Rsync/sites-available
+#        path: /home/PruebaAnsible/Rsync/sites-enabled
+#        mode: "u=rw,g=r,o=r"
+#        owner: root
+#        recurse: yes     
 
     - name: Obtener la lista de archivos en sites-available
       find:
