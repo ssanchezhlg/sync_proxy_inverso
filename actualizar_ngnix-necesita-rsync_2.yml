@@ -6,7 +6,7 @@
     - name: Copiar carpeta usando rsync
       synchronize:
         src: sites-available-rsync/
-        dest: /home/PruebaAnsible/Rsync/
+        dest: /home/PruebaAnsible/Rsync/sites-available
         delete: yes
         recursive: yes
         checksum: yes
@@ -15,15 +15,15 @@
 
     - name: Crear enlaces simbólicos en sites-enabled
       file:
-        src: /home/PruebaAnsible/Rsync/{{ item }}
-        dest: /etc/nginx/sites-enabled/{{ item }}
+        src: /home/PruebaAnsible/Rsync/sites-available/{{ item }}
+        dest: /home/PruebaAnsible/Rsync/sites-enabled/{{ item }}
         state: link
-      loop: "{{ lookup('fileglob', '/home/PruebaAnsible/Rsync/*') | basename }}"
+      loop: "{{ lookup('fileglob', '/home/PruebaAnsible/Rsync/sites-available/*') | basename }}"
       notify: Reiniciar Nginx
 
-  handlers:
-    - name: Reiniciar Nginx
-      service:
-        name: nginx
-        state: restarted
+#  handlers:
+#    - name: Reiniciar Nginx
+#      service:
+#        name: nginx
+#        state: restarted
 
