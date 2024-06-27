@@ -10,7 +10,7 @@
         delete: yes
         recursive: yes
         checksum: yes
-#        archive: yes
+        archive: no
         compress: yes
         times: yes
 
