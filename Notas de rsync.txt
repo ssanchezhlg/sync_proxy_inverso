@@ -21,3 +21,59 @@ Estos son solo algunos de los parámetros disponibles. Puedes consultar la docum
 
 
 En el caso del palybook se le pone en host all, pues por el inventory es donde se especificara el servidor a donde se accedera
+
+
+
+Desplegarla con Ansible Semaphore
+
+1. Agregamos el Environment
+
+en nombre le pondremos: none
+
+en las variables: {}
+
+2. Agregamos el Repositories
+
+le agregamos el nombre: sync_proxy_inverso
+
+le agregamos la Url: https://github.local.softnet.cu/ssanchezhlg/sync_proxy_inverso.git
+
+le agregamos la rama: main
+
+y el acceso: este acceso ya debe de estar agregado.
+
+
+3. Creamos el inventario
+
+le agregamos el nombre: Server_Local_Docker
+
+user credenciales: Escogemos ya la creada
+
+Sudo credenciales lo dejamos en blanco
+
+En type escogemos: static
+
+y abajo agregamos
+
+[Server_Local_Docker]
+10.10.10.110 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+
+4. Creamos Task Templates 
+
+le agregamos el nombre: 05 - sync_proxy_inverso
+
+playbook filename: (este playbook lo escogermos en el repositorio, el cual es el que sera monitoreado por el sistema) actualizar_ngnix-necesita-rsync_2.yml
+
+Inventory: Escogemos el inventario agregado para esta tarea
+
+Repository: Escogemos el repository agregado agregado para esta tarea
+
+Environment: Escogemos None
+
+
+
+
+
+
+Ahora vamos a semaphore y creamos una tarea y la hacemos correr:
