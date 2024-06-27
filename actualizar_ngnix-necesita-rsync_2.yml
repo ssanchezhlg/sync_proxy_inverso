@@ -1,5 +1,5 @@
 - name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
-  hosts: Server_Local_Docker
+  hosts: all
   become: yes
 
   tasks:
