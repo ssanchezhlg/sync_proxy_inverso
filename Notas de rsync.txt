@@ -1,0 +1,19 @@
+El módulo synchronize de Ansible, que se basa en el comando rsync, tiene una variedad de parámetros que puedes utilizar para personalizar el comportamiento de la sincronización. Aquí tienes algunos de los parámetros más comunes:
+
+    src: La ruta del directorio o archivo de origen que se va a sincronizar.
+    dest: La ruta del directorio de destino donde se va a sincronizar el contenido.
+    delete: Si se establece en yes, los archivos que existen en el destino pero no en el origen se eliminarán.
+    recursive: Si se establece en yes, la sincronización se realizará de manera recursiva, incluyendo subdirectorios.
+    checksum: Si se establece en yes, se utilizará el checksum de los archivos para determinar si es necesario copiarlos o no.
+    archive: Si se establece en yes, se preservarán los permisos, enlaces simbólicos, propietario y grupo de los archivos durante la copia.
+    compress: Si se establece en yes, los datos se comprimirán durante la transferencia.
+    owner: Si se establece en yes, se preservará el propietario de los archivos.
+    group: Si se establece en yes, se preservará el grupo de los archivos.
+    perms: Si se establece en yes, se preservarán los permisos de los archivos.
+    times: Si se establece en yes, se preservarán las marcas de tiempo de los archivos.
+    links: Si se establece en yes, los enlaces simbólicos serán copiados en lugar de ser seguidos.
+    copy_links: Si se establece en yes, los enlaces simbólicos serán copiados como archivos.
+    rsync_path: La ruta al comando rsync en el servidor remoto.
+    rsync_opts: Una lista de opciones adicionales que se pasarán al comando rsync.
+
+Estos son solo algunos de los parámetros disponibles. Puedes consultar la documentación de Ansible para obtener más información sobre cada uno de ellos y cómo utilizarlos en tu playbook.
