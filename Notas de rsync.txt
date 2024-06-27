@@ -17,3 +17,7 @@ El módulo synchronize de Ansible, que se basa en el comando rsync, tiene una va
     rsync_opts: Una lista de opciones adicionales que se pasarán al comando rsync.
 
 Estos son solo algunos de los parámetros disponibles. Puedes consultar la documentación de Ansible para obtener más información sobre cada uno de ellos y cómo utilizarlos en tu playbook.
+
+
+
+En el caso del palybook se le pone en host all, pues por el inventory es donde se especificara el servidor a donde se accedera
