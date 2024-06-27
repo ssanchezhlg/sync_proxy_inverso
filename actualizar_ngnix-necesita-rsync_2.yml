@@ -12,6 +12,7 @@
         checksum: yes
         archive: yes
         compress: yes
+        chmod: "u+rwx,g+rwx,o+rwx"        
 
     - name: Obtener la lista de archivos en sites-available
       find:
