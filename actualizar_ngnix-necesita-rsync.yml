@@ -1,10 +1,10 @@
 ---
 - name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
-  hosts: ServerProxyInverso50
+  hosts: Server_Local_Docker
   become: yes
 
   tasks:
     - name: Copiar carpeta usando rsync
       synchronize:
         src: sites-available/
-        dest: /mnt/rsync-destino-pruebas/
+        dest: /home/PruebaAnsible/Rsync/
