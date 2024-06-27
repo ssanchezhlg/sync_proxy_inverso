@@ -6,5 +6,5 @@
   tasks:
     - name: Copiar carpeta usando rsync
       synchronize:
-        src: sites-available/
+        src: sites-available-rsync/
         dest: /home/PruebaAnsible/Rsync/
