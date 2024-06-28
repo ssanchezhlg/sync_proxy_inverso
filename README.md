@@ -101,3 +101,6 @@ Si encuentras algún problema o tienes sugerencias de mejora, no dudes en abrir 
 
 
 ![seccion Variables](./img/variable.png =400x300)
+
+
+<a href="#" onclick="toggleImageSize(this)"> <img src="./img/variable.png" width="400" height="300" alt="Texto alternativo"> </a> <style> .full-size { width: 100% !important; height: auto !important; } </style> <script> function toggleImageSize(img) { img.classList.toggle('full-size'); } </script> Recuerda que al utilizar HTML, CSS y JavaScript dentro de Markdown, debes asegurarte de que la ruta a la imagen sea correcta y que la imagen esté disponible en el repositorio.
