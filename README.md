@@ -100,3 +100,4 @@ Si encuentras algún problema o tienes sugerencias de mejora, no dudes en abrir 
 ![](./img/variable.png)
 
 
+<img src="./img/variable.png" width="20" height="30" alt="Texto alternativo">
