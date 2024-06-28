@@ -100,4 +100,4 @@ Si encuentras algún problema o tienes sugerencias de mejora, no dudes en abrir 
 ![](./img/variable.png)
 
 
-<img src="./img/variable.png" width="1500" height="1500" alt="seccion Variables">
+![seccion Variables](./img/variable.png =400x300)
