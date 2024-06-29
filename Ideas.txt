@@ -10,3 +10,16 @@ ejemplo
 ansible.hlg.sld.cu.conf-off
 
 entonces me elimine el enlace simbolico de sites-enabled
+
+
+
+
+
+## En caso de necesitar aplicarle permisos
+    - name: Establecer permisos en los archivos copiados
+      file:
+        path: /home/PruebaAnsible/Rsync/sites-available
+        path: /home/PruebaAnsible/Rsync/sites-enabled
+        mode: "u=rw,g=r,o=r"
+        owner: root
+        recurse: yes   
