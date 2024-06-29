@@ -3,6 +3,17 @@
 #  become: yes
 
   tasks:
+    - name: Verificar si rsync está instalado
+      command: which rsync
+      register: rsync_installed
+      ignore_errors: true
+    
+    - name: Instalar rsync si no está instalado
+      package:
+        name: rsync
+        state: present
+      when: rsync_installed.rc != 0
+
     - name: Copiar carpeta usando rsync
       synchronize:
         src: sites-available-rsync/
