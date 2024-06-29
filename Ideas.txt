@@ -1,0 +1,12 @@
+agregarle que cuando renombre el virtual host en sites-available es decir si se llama ejemplo
+
+ansible.hlg.sld.cu.conf
+
+y le agrego al final -off
+
+ejemplo
+
+
+ansible.hlg.sld.cu.conf-off
+
+entonces me elimine el enlace simbolico de sites-enabled
