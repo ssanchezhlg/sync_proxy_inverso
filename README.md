@@ -4,6 +4,7 @@ Este proyecto utiliza Ansible para sincronizar los archivos de configuración de
 
 ## Requisitos
 
+- Tener instalado rsync en la maquina cliente donde se va a trabajar
 - Ansible instalado en la máquina desde donde se ejecutará el playbook.
 - Acceso SSH al servidor remoto donde se encuentra Nginx.
 - Permisos de superusuario (sudo) en el servidor remoto.
