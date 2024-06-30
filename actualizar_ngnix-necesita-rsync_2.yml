@@ -5,7 +5,7 @@
     rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
-    exclude_files: ["default", "file1.conf", "file2.conf", "file3.conf"]  # Archivos a excluir
+    exclude_files: ["default", "file1.conf", "file2.conf"]  # Archivos a excluir
 
   tasks:
     - name: Copiar carpeta usando rsync
@@ -26,6 +26,12 @@
         patterns: "*"
       register: files_to_link
 
+    - name: Obtener la lista de archivos en sites-enabled
+      find:
+        paths: "{{ sites_enabled_path }}"
+        patterns: "*"
+      register: enabled_files
+
     - name: Filtrar archivos excluidos
       set_fact:
         filtered_files_to_link: >-
@@ -41,3 +47,11 @@
       when: 
         - not item.path | basename | regex_search('-off$')
       with_items: "{{ filtered_files_to_link }}"
+
+    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      when: not (item.path | basename) in (filtered_files_to_link | map(attribute='path') | map('basename') | list)
+      with_items: "{{ enabled_files.files }}"
+
