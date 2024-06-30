@@ -30,12 +30,12 @@
 
     - name: Eliminar enlaces simbólicos para archivos renombrados con -off
       file:
-        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename | regex_replace('-off$', '') }}"
+        path: "{{ sites_enabled_path }}/{{ item.path | basename | regex_replace('-off$', '') }}"
         state: absent
       when: item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
 
-      
+
     - name: Crear enlaces simbólicos en sites-enabled
       file:
         src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
@@ -44,17 +44,5 @@
       with_items: "{{ files_to_link.files }}"	
 
 
-    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
-      shell: |
-        cd /home/PruebaAnsible/Rsync/sites-enabled/
-        for link in *; do
-          if [ -L "$link" ]; then  # Verificar si es un enlace simbólico
-            target=$(readlink "$link")
-            if [ ! -e "/home/PruebaAnsible/Rsync/sites-available/$(basename $target)" ]; then
-              rm -f "$link"
-            fi
-          fi
-        done
-      args:
-        executable: /bin/bash
+
 
