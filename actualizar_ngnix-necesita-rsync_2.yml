@@ -35,7 +35,7 @@
       set_fact:
         filtered_files_to_link: >-
           {{
-            files_to_link.files | selectattr('path', 'search', '^((?!default).)*$') | list
+            files_to_link.files | selectattr('path', 'search', '^((?!default|file1.conf|file2.conf).)*$') | list
           }}
 
     - name: Crear enlaces simbólicos en sites-enabled
