@@ -1,12 +1,16 @@
 - name: Copiar contenido de la carpeta sites-available al servidor Nginx1
   hosts: all
-#  become: yes
+  vars:
+    rsync_src: sites-available-rsync/
+    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
+    sites_available_path: /home/PruebaAnsible/Rsync/sites-available
+    sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
 
   tasks:
     - name: Copiar carpeta usando rsync
       synchronize:
-        src: sites-available-rsync/
-        dest: /home/PruebaAnsible/Rsync/sites-available/
+        src: "{{ rsync_src }}"
+        dest: "{{ rsync_dest }}"
         delete: yes
         recursive: yes
         checksum: yes
@@ -16,14 +20,14 @@
 
     - name: Obtener la lista de archivos en sites-available
       find:
-        paths: /home/PruebaAnsible/Rsync/sites-available
+        paths: "{{ sites_available_path }}"
         patterns: "*"
       register: files_to_link
 
     - name: Crear enlaces simbólicos en sites-enabled
       file:
-        src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
-        dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
+        src: "{{ sites_available_path }}/{{ item.path | basename }}"
+        dest: "{{ sites_enabled_path }}/{{ item.path | basename }}"
         state: link
       when: not item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
