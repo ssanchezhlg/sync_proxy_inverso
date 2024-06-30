@@ -26,3 +26,11 @@
         dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
       with_items: "{{ files_to_link.files }}"	
+
+    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
+      file:
+        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item }}"
+        state: absent
+      with_items: "{{ lookup('fileglob', '/home/PruebaAnsible/Rsync/sites-enabled/*') | map('basename') | list }}"
+      when: item not in (files_to_link.files | map(attribute='path') | map('basename') | list)
+      
