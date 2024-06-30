@@ -26,6 +26,22 @@
         dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
       with_items: "{{ files_to_link.files }}"	
+      
 
-    - name: Eliminar archivos locales que no existen en sites-available
-      shell: "find /home/PruebaAnsible/Rsync/sites-enabled/ -type f -exec sh -c 'if [ ! -e \"/home/PruebaAnsible/Rsync/sites-available/$(basename {})\" ]; then rm -f {}; fi' \\;"
+  #  - name: Eliminar archivos locales que no existen en sites-available
+  #    shell: "find /home/PruebaAnsible/Rsync/sites-enabled/ -type f -exec sh -c 'if [ ! -e \"/home/PruebaAnsible/Rsync/sites-available/$(basename {})\" ]; then rm -f {}; fi' \\;"
+
+
+
+      - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
+      find:
+        paths: /home/PruebaAnsible/Rsync/sites-enabled
+        file_type: link
+        contains: '/home/PruebaAnsible/Rsync/sites-available/'
+      register: orphaned_links
+
+      - name: Eliminar enlaces simbólicos huérfanos
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ orphaned_links.files }}"
