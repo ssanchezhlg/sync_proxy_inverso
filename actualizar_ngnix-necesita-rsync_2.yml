@@ -5,7 +5,7 @@
     rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
-    exclude_files: ["default"]  # Archivos a excluir
+    exclude_files: ["default", "file1.conf", "file2.conf"]  # Archivos a excluir
 
   tasks:
     - name: Copiar carpeta usando rsync
@@ -18,6 +18,9 @@
         archive: no
         compress: yes
         times: yes
+        rsync_opts:
+          - "--exclude={{ item }}"
+      with_items: "{{ exclude_files }}"
 
     - name: Obtener la lista de archivos en sites-available
       find:
