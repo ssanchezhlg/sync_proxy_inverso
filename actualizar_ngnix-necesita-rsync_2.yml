@@ -1,6 +1,6 @@
 - name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
   hosts: all
-  become: yes
+#  become: yes
 
   tasks:
     - name: Copiar carpeta usando rsync
