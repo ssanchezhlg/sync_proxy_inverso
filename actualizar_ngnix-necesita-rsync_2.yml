@@ -28,15 +28,15 @@
 
     - name: Eliminar enlaces simbólicos para archivos renombrados con -off
       file:
-        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename | regex_replace('-off$', '') }}"
+        path: "{{ sites_enabled_path }}/{{ item.path | basename | regex_replace('-off$', '') }}"
         state: absent
       when: item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
 
     - name: Crear enlaces simbólicos en sites-enabled
       file:
-        src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
-        dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
+        src: "{{ sites_available_path }}/{{ item.path | basename }}"
+        dest: "{{ sites_enabled_path }}/{{ item.path | basename }}"
         state: link
       when: not item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
