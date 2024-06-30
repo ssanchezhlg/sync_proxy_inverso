@@ -36,23 +36,24 @@
 
     - name: Crear enlaces simbólicos en sites-enabled
       file:
-        src: "{{ sites_available_path }}/{{ item.path | basename }}"
-        dest: "{{ sites_enabled_path }}/{{ item.path | basename }}"
+        src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
+        dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
       when: not item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
 
     - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
       shell: |
-        cd {{ sites_enabled_path }}
+        cd /home/PruebaAnsible/Rsync/sites-enabled/
         for link in *; do
           if [ -L "$link" ]; then  # Verificar si es un enlace simbólico
             target=$(readlink "$link")
-            if [ ! -e "{{ sites_available_path }}/$(basename $target)" ]; then
+            if [ ! -e "/home/PruebaAnsible/Rsync/sites-available/$(basename $target)" ]; then
               rm -f "$link"
             fi
           fi
         done
       args:
         executable: /bin/bash 
+
 
