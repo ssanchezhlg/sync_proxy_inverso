@@ -32,18 +32,16 @@
   #    shell: "find /home/PruebaAnsible/Rsync/sites-enabled/ -type f -exec sh -c 'if [ ! -e \"/home/PruebaAnsible/Rsync/sites-available/$(basename {})\" ]; then rm -f {}; fi' \\;"
 
     - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
-      find:
-        paths: /home/PruebaAnsible/Rsync/sites-enabled
-        file_type: link
-        contains: '/home/PruebaAnsible/Rsync/sites-available/'
-      register: orphaned_links
-
-    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ orphaned_links.files }}"
-      when: item.path not in (files_to_link.files | map(attribute='path') | map('basename') | list)
-
-
+      shell: |
+        cd /home/PruebaAnsible/Rsync/sites-enabled/
+        for link in *; do
+          if [ -L "$link" ]; then  # Verificar si es un enlace simbólico
+            target=$(readlink "$link")
+            if [ ! -e "/home/PruebaAnsible/Rsync/sites-available/$(basename $target)" ]; then
+              rm -f "$link"
+            fi
+          fi
+        done
+      args:
+        executable: /bin/bash
 
