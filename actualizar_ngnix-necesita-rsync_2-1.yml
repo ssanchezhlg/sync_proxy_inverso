@@ -1,4 +1,4 @@
-- name: Copiar contenido de la carpeta sites-available al servidor Nginx1
+- name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
   hosts: all
 #  become: yes
 
@@ -20,19 +20,10 @@
         patterns: "*"
       register: files_to_link
 
-    - name: Eliminar enlaces simbólicos para archivos renombrados con -off
-      file:
-        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename | regex_replace('-off$', '') }}"
-        state: absent
-      when: item.path | basename | search('-off$') != -1
-      with_items: "{{ files_to_link.files }}"
-
     - name: Crear enlaces simbólicos en sites-enabled
       file:
         src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
         dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
-      when: item.path | basename | search('-off$') == -1
-      with_items: "{{ files_to_link.files }}"
-
+      with_items: "{{ files_to_link.files }}"	
       
