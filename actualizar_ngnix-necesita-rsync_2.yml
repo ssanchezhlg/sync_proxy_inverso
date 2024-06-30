@@ -5,7 +5,6 @@
     rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
-    exclude_files: ["default", "file1.conf", "file2.conf"]  # Archivos a excluir
 
   tasks:
     - name: Copiar carpeta usando rsync
@@ -19,8 +18,7 @@
         compress: yes
         times: yes
         rsync_opts:
-          - "--exclude={{ item }}"
-      with_items: "{{ exclude_files }}"
+          - "--exclude=default"
 
     - name: Obtener la lista de archivos en sites-available
       find:
@@ -32,7 +30,7 @@
       set_fact:
         filtered_files_to_link: >-
           {{
-            files_to_link.files | selectattr('path', 'search', '^((?!(' + exclude_files | join('|') + ')).)*$') | list
+            files_to_link.files | selectattr('path', 'search', '^((?!default).)*$') | list
           }}
 
     - name: Crear enlaces simbólicos en sites-enabled
