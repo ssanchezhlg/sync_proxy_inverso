@@ -24,7 +24,7 @@
       file:
         path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename | regex_replace('-off$', '') }}"
         state: absent
-      when: item.path | basename | search('-off$') != -1
+      when: item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
 
     - name: Crear enlaces simbólicos en sites-enabled
@@ -32,7 +32,5 @@
         src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
         dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
-      when: item.path | basename | search('-off$') == -1
+      when: not item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
-
-      
