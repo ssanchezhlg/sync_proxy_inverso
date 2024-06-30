@@ -5,6 +5,7 @@
     rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
+    exclude_files: ["default"]  # Archivos a excluir
 
   tasks:
     - name: Copiar carpeta usando rsync
@@ -29,5 +30,7 @@
         src: "{{ sites_available_path }}/{{ item.path | basename }}"
         dest: "{{ sites_enabled_path }}/{{ item.path | basename }}"
         state: link
-      when: not item.path | basename | regex_search('-off$')
+      when: 
+        - not item.path | basename | regex_search('-off$')
+        - item.path | basename not in exclude_files
       with_items: "{{ files_to_link.files }}"
