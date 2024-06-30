@@ -1,17 +1,12 @@
 - name: Copiar contenido de la carpeta sites-available al servidor Nginx1
   hosts: all
-  vars:
-    rsync_src: sites-available-rsync/
-    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
-    sites_available_path: /home/PruebaAnsible/Rsync/sites-available
-    sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
-    exclude_files: ['default', 'file1.conf', 'file2.conf']
+#  become: yes
 
   tasks:
     - name: Copiar carpeta usando rsync
       synchronize:
-        src: "{{ rsync_src }}"
-        dest: "{{ rsync_dest }}"
+        src: sites-available-rsync/
+        dest: /home/PruebaAnsible/Rsync/sites-available/
         delete: yes
         recursive: yes
         checksum: yes
@@ -21,27 +16,21 @@
 
     - name: Obtener la lista de archivos en sites-available
       find:
-        paths: "{{ sites_available_path }}"
+        paths: /home/PruebaAnsible/Rsync/sites-available
         patterns: "*"
       register: files_to_link
 
     - name: Eliminar enlaces simbólicos para archivos renombrados con -off
       file:
-        path: "{{ sites_enabled_path }}/{{ item.path | basename | regex_replace('-off$', '') }}"
+        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename | regex_replace('-off$', '') }}"
         state: absent
       when: item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
 
-    - name: Crear o actualizar enlaces simbólicos en sites-enabled
+    - name: Crear enlaces simbólicos en sites-enabled
       file:
-        src: "{{ sites_available_path }}/{{ item.path | basename }}"
-        dest: "{{ sites_enabled_path }}/{{ item.path | basename }}"
+        src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
+        dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
+      when: not item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
-
-    - name: Eliminar enlaces simbólicos obsoletos en sites-enabled
-      file:
-        path: "{{ sites_enabled_path }}/{{ item.path | basename }}"
-        state: absent
-      when: "not (files_to_link.files | map(attribute='path') | map('basename') | list) | regex_search(item.path | basename)"
-      with_items: "{{ lookup('fileglob', sites_enabled_path + '/*') }}"
