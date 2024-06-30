@@ -31,7 +31,7 @@
     - name: Listar enlaces simbólicos huérfanos en sites-enabled
       debug:
         msg: "Enlace simbólico huérfano: {{ item }}"
-      with_items: "{{ lookup('fileglob', '/home/PruebaAnsible/Rsync/sites-enabled/*') | map('basename') | list }}"
+      with_items: "{{ lookup('fileglob', '/home/PruebaAnsible/Rsync/sites-available/*') | map('basename') | list }}"
       when: item not in (files_to_link.files | map(attribute='path') | map('basename') | list)
 
 
