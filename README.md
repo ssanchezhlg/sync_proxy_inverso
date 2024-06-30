@@ -9,6 +9,18 @@ Este proyecto utiliza Ansible para sincronizar los archivos de configuración de
 - Acceso SSH al servidor remoto donde se encuentra Nginx.
 - Permisos de superusuario (sudo) en el servidor remoto.
 
+
+- Se le agrego una opcion para no tener que eliminar el fichero del virtualhost del servidor, simplemente al agregarle -off al final este ya 
+no pasara al directorio sites-enabled
+
+ejemplo
+
+ansible.hlg.sld.cu.conf
+
+ansible.hlg.sld.cu.conf-off
+
+
+
 ## Estructura del Proyecto
 
 ```
