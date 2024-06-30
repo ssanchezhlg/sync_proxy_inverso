@@ -27,16 +27,5 @@
         state: link
       with_items: "{{ files_to_link.files }}"	
 
-    - name: Obtener la lista de archivos en sites-enabled
-      find:
-        paths: /home/PruebaAnsible/Rsync/sites-enabled
-        patterns: "*"
-      register: files_enabled
-
-    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
-      file:
-        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
-        state: absent
-      with_items: "{{ files_enabled.files }}"
-      when: item.path | basename not in (files_to_link.files | map(attribute='path') | map('basename') | list)
-
+    - name: Eliminar archivos locales que no existen en /tmp/sites-available/
+      shell: "find /home/PruebaAnsible/Rsync/sites-available/ -type f -exec sh -c 'if [ ! -e \"/home/PruebaAnsible/Rsync/sites-enabled/$(basename {})\" ]; then rm -f {}; fi' \\;"
