@@ -20,6 +20,14 @@ ansible.hlg.sld.cu.conf
 ansible.hlg.sld.cu.conf-off
 
 
+- En la seccion vars se declararan las rutas asi como los ficheros a exclui
+  vars:
+    rsync_src: sites-available-rsync/
+    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
+    sites_available_path: /home/PruebaAnsible/Rsync/sites-available
+    sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
+    exclude_files: ["default", "file1.conf", "file2.conf"]  # Archivos a excluir
+
 
 ## Estructura del Proyecto
 
