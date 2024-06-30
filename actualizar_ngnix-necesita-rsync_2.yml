@@ -1,57 +1,37 @@
 - name: Copiar contenido de la carpeta sites-available al servidor Nginx1
   hosts: all
-  vars:
-    rsync_src: sites-available-rsync/
-    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
-    sites_available_path: /home/PruebaAnsible/Rsync/sites-available
-    sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
-    exclude_files: ["default", "file1.conf", "file2.conf"]  # Archivos a excluir
+#  become: yes
 
   tasks:
     - name: Copiar carpeta usando rsync
       synchronize:
-        src: "{{ rsync_src }}"
-        dest: "{{ rsync_dest }}"
+        src: sites-available-rsync/
+        dest: /home/PruebaAnsible/Rsync/sites-available/
         delete: yes
         recursive: yes
         checksum: yes
         archive: no
         compress: yes
         times: yes
-        rsync_opts: "{{ exclude_files | map('regex_replace', '^', '--exclude=') | list }}"
 
     - name: Obtener la lista de archivos en sites-available
       find:
-        paths: "{{ sites_available_path }}"
+        paths: /home/PruebaAnsible/Rsync/sites-available
         patterns: "*"
       register: files_to_link
 
-    - name: Obtener la lista de archivos en sites-enabled
-      find:
-        paths: "{{ sites_enabled_path }}"
-        patterns: "*"
-      register: enabled_files
-
-    - name: Filtrar archivos excluidos
-      set_fact:
-        filtered_files_to_link: >-
-          {{
-            files_to_link.files | selectattr('path', 'search', '^((?!(' + exclude_files | join('|') + ')).)*$') | list
-          }}
+    - name: Eliminar enlaces simbólicos para archivos renombrados con -off
+      file:
+        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename | regex_replace('-off$', '') }}"
+        state: absent
+      when: item.path | basename | regex_search('-off$')
+      with_items: "{{ files_to_link.files }}"
 
     - name: Crear enlaces simbólicos en sites-enabled
       file:
-        src: "{{ sites_available_path }}/{{ item.path | basename }}"
-        dest: "{{ sites_enabled_path }}/{{ item.path | basename }}"
+        src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
+        dest: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename }}"
         state: link
-      when: 
-        - not item.path | basename | regex_search('-off$')
-      with_items: "{{ filtered_files_to_link }}"
-
-    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      when: not (item.path | basename) in (filtered_files_to_link | map(attribute='path') | map('basename') | list)
-      with_items: "{{ enabled_files.files }}"
+      when: not item.path | basename | regex_search('-off$')
+      with_items: "{{ files_to_link.files }}"
 
