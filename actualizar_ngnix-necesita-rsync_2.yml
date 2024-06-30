@@ -1,10 +1,10 @@
 - name: Copiar contenido de la carpeta sites-available al servidor Nginx1
   hosts: all
   vars:
-    rsync_src: sites-available/
-    rsync_dest: /home/PruebaAnsible/sites-available/
-    sites_available_path: /home/PruebaAnsible/sites-available
-    sites_enabled_path: /home/PruebaAnsible/sites-enabled
+    rsync_src: sites-available-rsync/
+    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
+    sites_available_path: /home/PruebaAnsible/Rsync/sites-available
+    sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
 
   tasks:
     - name: Copiar carpeta usando rsync
