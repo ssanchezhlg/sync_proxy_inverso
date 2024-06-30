@@ -28,6 +28,10 @@
         patterns: "*"
       register: files_to_link
 
+    - name: Filtrar archivos excluidos
+      set_fact:
+        filtered_files_to_link: "{{ files_to_link.files | reject('search', exclude_files | join('|')) | list }}"
+
     - name: Crear enlaces simbólicos en sites-enabled
       file:
         src: "{{ sites_available_path }}/{{ item.path | basename }}"
@@ -35,5 +39,4 @@
         state: link
       when: 
         - not item.path | basename | regex_search('-off$')
-        - item.path | basename not in exclude_files
-      with_items: "{{ files_to_link.files }}"
+      with_items: "{{ filtered_files_to_link }}"
