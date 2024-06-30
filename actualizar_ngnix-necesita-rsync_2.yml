@@ -1,12 +1,20 @@
 - name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
   hosts: all
 #  become: yes
+  vars:
+    rsync_src: sites-available-rsync/
+    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
+    sites_available_path: /home/PruebaAnsible/Rsync/sites-available
+    sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
+    exclude_files: ('default' 'file1.conf' 'file2.conf')
+
+
 
   tasks:
     - name: Copiar carpeta usando rsync
       synchronize:
-        src: sites-available-rsync/
-        dest: /home/PruebaAnsible/Rsync/sites-available/
+        src: "{{ rsync_src }}"
+        dest: "{{ rsync_dest }}"
         delete: yes
         recursive: yes
         checksum: yes
@@ -16,10 +24,18 @@
 
     - name: Obtener la lista de archivos en sites-available
       find:
-        paths: /home/PruebaAnsible/Rsync/sites-available
+        paths: "{{ sites_available_path }}"
         patterns: "*"
       register: files_to_link
 
+    - name: Eliminar enlaces simbólicos para archivos renombrados con -off
+      file:
+        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item.path | basename | regex_replace('-off$', '') }}"
+        state: absent
+      when: item.path | basename | regex_search('-off$')
+      with_items: "{{ files_to_link.files }}"
+
+      
     - name: Crear enlaces simbólicos en sites-enabled
       file:
         src: "/home/PruebaAnsible/Rsync/sites-available/{{ item.path | basename }}"
@@ -27,9 +43,6 @@
         state: link
       with_items: "{{ files_to_link.files }}"	
 
-
-  #  - name: Eliminar archivos locales que no existen en sites-available
-  #    shell: "find /home/PruebaAnsible/Rsync/sites-enabled/ -type f -exec sh -c 'if [ ! -e \"/home/PruebaAnsible/Rsync/sites-available/$(basename {})\" ]; then rm -f {}; fi' \\;"
 
     - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
       shell: |
