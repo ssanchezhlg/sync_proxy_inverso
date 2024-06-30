@@ -27,26 +27,22 @@
         state: link
       with_items: "{{ files_to_link.files }}"	
 
+  tasks:
+    - name: Obtener la lista de archivos en sites-available
+      find:
+        paths: /home/PruebaAnsible/Rsync/sites-available
+        patterns: "*"
+      register: files_available
 
-    - name: Listar archivos en sites-enabled
+    - name: Obtener la lista de archivos en sites-enabled
       find:
         paths: /home/PruebaAnsible/Rsync/sites-enabled
         patterns: "*"
-      register: listed_files
+      register: files_enabled
 
-    - name: Listar enlaces simbólicos huérfanos en sites-enabled
-      debug:
-        msg: "Enlace simbólico huérfano: {{ item.path }}"
-      with_items: "{{ listed_files.files }}"
-      when: item.path | basename not in (files_to_link.files | map(attribute='path') | map('basename') | list)
-
-
-
-
-#    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
-#      file:
-#        path: "/home/PruebaAnsible/Rsync/sites-enabled/{{ item }}"
-#        state: absent
-#      with_items: "{{ lookup('fileglob', '/home/PruebaAnsible/Rsync/sites-enabled/*') | map('basename') | list }}"
-#      when: item not in (files_to_link.files | map(attribute='path') | map('basename') | list)
-      
+    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ files_enabled.files }}"
+      when: item.path | basename not in (files_available.files | map(attribute='path') | map('basename') | list)
