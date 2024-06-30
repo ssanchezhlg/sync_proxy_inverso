@@ -23,3 +23,19 @@ entonces me elimine el enlace simbolico de sites-enabled
         mode: "u=rw,g=r,o=r"
         owner: root
         recurse: yes   
+
+
+
+    - name: Eliminar enlaces simbólicos huérfanos en sites-enabled
+      shell: |
+        cd /home/PruebaAnsible/Rsync/sites-enabled/
+        for link in *; do
+          if [ -L "$link" ]; then  # Verificar si es un enlace simbólico
+            target=$(readlink "$link")
+            if [ ! -e "/home/PruebaAnsible/Rsync/sites-available/$(basename $target)" ]; then
+              rm -f "$link"
+            fi
+          fi
+        done
+      args:
+        executable: /bin/bash        
