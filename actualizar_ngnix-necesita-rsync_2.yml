@@ -40,9 +40,15 @@
       when: not item.path | basename | regex_search('-off$')
       with_items: "{{ files_to_link.files }}"
 
+    - name: Obtener la lista de archivos en sites-enabled
+      find:
+        paths: "{{ sites_enabled_path }}"
+        patterns: "*"
+      register: enabled_files
+
     - name: Eliminar enlaces simbólicos obsoletos en sites-enabled
       file:
         path: "{{ sites_enabled_path }}/{{ item.path | basename }}"
         state: absent
-      when: "not (files_to_link.files | map(attribute='path') | map('basename') | list | flatten) | regex_search(item.path | basename)"
-      with_items: "{{ ansible_facts.readdir['results'] }}"
+      when: "not (files_to_link.files | map(attribute='path') | map('basename') | list) | regex_search(item.path | basename)"
+      with_items: "{{ enabled_files.files }}"
