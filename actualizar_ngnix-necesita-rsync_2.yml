@@ -30,7 +30,10 @@
 
     - name: Filtrar archivos excluidos
       set_fact:
-        filtered_files_to_link: "{{ files_to_link.files | reject('search', exclude_files | join('|')) | list }}"
+        filtered_files_to_link: >-
+          {{
+            files_to_link.files | selectattr('path', 'search', '^((?!(' + exclude_files | join('|') + ')).)*$') | list
+          }}
 
     - name: Crear enlaces simbólicos en sites-enabled
       file:
