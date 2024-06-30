@@ -27,5 +27,5 @@
         state: link
       with_items: "{{ files_to_link.files }}"	
 
-    - name: Eliminar archivos locales que no existen en /tmp/sites-available/
+    - name: Eliminar archivos locales que no existen en sites-available
       shell: "find /home/PruebaAnsible/Rsync/sites-available/ -type f -exec sh -c 'if [ ! -e \"/home/PruebaAnsible/Rsync/sites-enabled/$(basename {})\" ]; then rm -f {}; fi' \\;"
