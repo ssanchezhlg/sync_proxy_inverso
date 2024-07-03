@@ -30,24 +30,23 @@
         path: "{{ rsync_src_config }}/nginx.conf"
       register: nginx_conf
 
-    - name: Copiar y reemplazar nginx.conf si copy_config está activado y nginx.conf existe
+    - name: Copiar y reemplazar nginx.conf si existe
       copy:
         src: "{{ rsync_src_config }}/nginx.conf"
         dest: /home/PruebaAnsible/Rsync/nginx.conf
-      when: copy_config and nginx_conf.stat.exists
+      when: nginx_conf.stat.exists
 
-    - name: Verificar si hay otros archivos de configuración
-      find:
-        paths: "{{ rsync_src_config }}/extras"
-      register: other_configs
+    - name: Verificar si hay otros archivos de configuración en extras
+      stat:
+        path: "{{ rsync_src_config }}/extras"
+      register: extras_config
       when: copy_other_config
 
-    - name: Copiar otras configuraciones si copy_other_config está activado y existen otros archivos
+    - name: Copiar otras configuraciones si copy_other_config está activado y existen archivos en extras
       synchronize:
         src: "{{ rsync_src_config }}/extras"
         dest: /home/PruebaAnsible/Rsync/
         recursive: yes
         rsync_opts:
           - "--exclude=nginx.conf"
-      when: copy_other_config and other_configs.matched > 0
-
+      when: copy_other_config and extras_config.stat.exists
