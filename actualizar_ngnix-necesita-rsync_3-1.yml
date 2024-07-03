@@ -28,13 +28,13 @@
     - name: Copiar y reemplazar nginx.conf si copy_config está activado
       copy:
         src: "{{ rsync_src_config }}/nginx.conf"
-        dest: /etc/nginx/nginx.conf
+        dest: /home/PruebaAnsible/Rsync/nginx.conf
       when: copy_config
 
     - name: Copiar otras configuraciones si copy_other_config está activado
       synchronize:
         src: "{{ rsync_src_config }}/extras"
-        dest: /etc/nginx/
+        dest: /home/PruebaAnsible/Rsync/
         recursive: yes
         rsync_opts:
           - "--exclude=nginx.conf"
