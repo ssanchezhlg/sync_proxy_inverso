@@ -25,21 +25,28 @@
         rsync_opts:
           - "--exclude={{ exclude_files | join(' --exclude=') }}"
 
-    - name: Copiar y reemplazar nginx.conf si copy_config está activado
+    - name: Verificar si nginx.conf existe
+      stat:
+        path: "{{ rsync_src_config }}/nginx.conf"
+      register: nginx_conf
+
+    - name: Copiar y reemplazar nginx.conf si existe y copy_config está activado
       copy:
         src: "{{ rsync_src_config }}/nginx.conf"
         dest: /home/PruebaAnsible/Rsync/nginx.conf
-      when: copy_config
-      register: copy_nginx_conf_result
-      failed_when: copy_nginx_conf_result is failed and not 'No such file or directory' in copy_nginx_conf_result.msg
+      when: copy_config and nginx_conf.stat.exists
 
-    - name: Copiar otras configuraciones si copy_other_config está activado
+    - name: Verificar si hay otros archivos de configuración en extras
+      stat:
+        path: "{{ rsync_src_config }}/extras"
+      register: extras_config
+      when: copy_other_config
+
+    - name: Copiar otras configuraciones si copy_other_config está activado y existen archivos en extras
       synchronize:
         src: "{{ rsync_src_config }}/extras"
         dest: /home/PruebaAnsible/Rsync/
         recursive: yes
         rsync_opts:
           - "--exclude=nginx.conf"
-      when: copy_other_config
-      register: copy_extras_result
-      failed_when: copy_extras_result is failed and not 'No such file or directory' in copy_extras_result.msg
+      when: copy_other_config and extras_config.stat.exists
