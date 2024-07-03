@@ -15,6 +15,74 @@ entonces me elimine el enlace simbolico de sites-enabled
 
 
 
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+
+
+- 02-07-2024
+
+
+
+agregarle estas 2 variables para activar las funciones 
+
+copy-config=true - false
+
+para copiar y remplazas el fichero de configuracion nginx.conf por el que se encuentra en el repo la ruta seria config/nginx.conf
+
+y agregarle esta otra variable 
+
+copy-other-config=true - false
+
+si se desea copiar otras cosas que existan en el mismo directorio, pueden ser carpetas o fichers de configuracion
+
+
+
+
+
+
+- name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
+  hosts: all
+#  become: yes
+  vars:
+    rsync_src: sites-available-rsync/
+    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
+    sites_available_path: /home/PruebaAnsible/Rsync/sites-available
+    sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
+    exclude_files: ['default', 'default-original', 'file2.conf']
+
+  tasks:
+    - name: Copiar carpeta usando rsync
+      synchronize:
+        src: "{{ rsync_src }}"
+        dest: "{{ rsync_dest }}"
+        delete: yes
+        recursive: yes
+        checksum: yes
+        archive: no
+        compress: yes
+        times: yes
+        rsync_opts:
+          - "--exclude={{ exclude_files | join(' --exclude=') }}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+
+
+
+
+
 ## En caso de necesitar aplicarle permisos
     - name: Establecer permisos en los archivos copiados
       file:

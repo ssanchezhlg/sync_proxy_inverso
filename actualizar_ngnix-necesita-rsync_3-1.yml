@@ -1,0 +1,40 @@
+- name: Copiar contenido de la carpeta sites-available al servidor Ngnix1
+  hosts: all
+#  become: yes
+  vars:
+    rsync_src: sites-available-rsync/
+    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
+    sites_available_path: /home/PruebaAnsible/Rsync/sites-available
+    sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
+    exclude_files: ['default', 'default-original', 'file2.conf']
+    copy_config: true
+    copy_other_config: true
+
+  tasks:
+    - name: Copiar carpeta usando rsync
+      synchronize:
+        src: "{{ rsync_src }}"
+        dest: "{{ rsync_dest }}"
+        delete: yes
+        recursive: yes
+        checksum: yes
+        archive: no
+        compress: yes
+        times: yes
+        rsync_opts:
+          - "--exclude={{ exclude_files | join(' --exclude=') }}"
+
+    - name: Copiar y reemplazar nginx.conf si copy_config está activado
+      copy:
+        src: "{{ rsync_src }}/config/nginx.conf"
+        dest: /etc/nginx/nginx.conf
+      when: copy_config
+
+    - name: Copiar otras configuraciones si copy_other_config está activado
+      synchronize:
+        src: "{{ rsync_src }}/config/extras"
+        dest: /etc/nginx/
+        recursive: yes
+        rsync_opts:
+          - "--exclude=nginx.conf"
+      when: copy_other_config

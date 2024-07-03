@@ -29,6 +29,10 @@ ansible.hlg.sld.cu.conf-off
     exclude_files: ["default", "file1.conf", "file2.conf"]  # Archivos a excluir
 
 
+
+se agregó la variable copy_config para controlar si se debe copiar y reemplazar el archivo nginx.conf.
+Se agregó la variable copy_other_config para controlar si se deben copiar otros archivos o carpetas del mismo directorio.
+
 ## Estructura del Proyecto
 
 ```
