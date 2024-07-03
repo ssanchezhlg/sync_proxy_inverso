@@ -10,14 +10,24 @@ Este proyecto utiliza Ansible para sincronizar los archivos de configuración de
 - Permisos de superusuario (sudo) en el servidor remoto.
 
 
+- los virtual host deben de tener el formato
+
+```
+nombre.dominio.cu.conf
+```
+
 - Se le agrego una opcion para no tener que eliminar el fichero del virtualhost del servidor, simplemente al agregarle -off al final este ya 
 no pasara al directorio sites-enabled
 
+
 ejemplo
-
+```
 ansible.hlg.sld.cu.conf
-
+```
+```
 ansible.hlg.sld.cu.conf-off
+```
+
 
 
 - En la seccion vars se declararan las rutas asi como los ficheros a exclui
@@ -32,6 +42,13 @@ ansible.hlg.sld.cu.conf-off
 
 se agregó la variable copy_config para controlar si se debe copiar y reemplazar el archivo nginx.conf.
 Se agregó la variable copy_other_config para controlar si se deben copiar otros archivos o carpetas del mismo directorio.
+
+si se desan agrear otras caprtes para agregale otros ceritficados asi como otras confiuracones extras se pueden agregar en la carpeta
+extras y luego apuntar el virtual host hasta la mismas, y asi no ahi que acceder ser a serer para hacerlo
+
+
+
+
 
 ## Estructura del Proyecto
 
