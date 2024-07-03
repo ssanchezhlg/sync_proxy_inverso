@@ -4,7 +4,6 @@
   vars:
     rsync_src: sites-available-rsync/
     rsync_src_config: config/
-    rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
     exclude_files: ['default', 'default-original', 'file2.conf']
@@ -16,7 +15,7 @@
     - name: Copiar carpeta usando rsync
       synchronize:
         src: "{{ rsync_src }}"
-        dest: "{{ rsync_dest }}"
+        dest: "{{ sites_available_path }}"
         delete: yes
         recursive: yes
         checksum: yes
