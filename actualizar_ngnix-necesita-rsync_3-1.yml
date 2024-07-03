@@ -29,7 +29,6 @@
       copy:
         src: "{{ rsync_src_config }}/nginx.conf"
         dest: /home/PruebaAnsible/Rsync/nginx.conf
-      when: nginx_conf.stat.exists
 
     - name: Verificar si hay otros archivos de configuración en extras
       stat:
