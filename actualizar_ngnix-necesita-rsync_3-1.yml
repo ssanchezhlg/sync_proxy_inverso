@@ -2,7 +2,7 @@
   hosts: all
 #  become: yes
   vars:
-    rsync_src: sites-available-rsync/
+    rsync_src: sites-available-rsync
     rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
