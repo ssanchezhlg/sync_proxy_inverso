@@ -25,11 +25,6 @@
         rsync_opts:
           - "--exclude={{ exclude_files | join(' --exclude=') }}"
 
-    - name: Verificar si nginx.conf existe
-      stat:
-        path: "{{ rsync_src_config }}/nginx.conf"
-      register: nginx_conf
-
     - name: Copiar y reemplazar nginx.conf si existe
       copy:
         src: "{{ rsync_src_config }}/nginx.conf"
