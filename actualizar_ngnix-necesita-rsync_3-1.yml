@@ -30,7 +30,9 @@
         src: "{{ rsync_src_config }}/nginx.conf"
         dest: /home/PruebaAnsible/Rsync/nginx.conf
       when: copy_config
-
+      ignore_errors: yes
+      failed_when: false
+      
     - name: Copiar otras configuraciones si copy_other_config está activado
       synchronize:
         src: "{{ rsync_src_config }}/extras"
