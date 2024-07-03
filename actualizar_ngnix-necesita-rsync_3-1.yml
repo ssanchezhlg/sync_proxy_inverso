@@ -29,8 +29,9 @@
       copy:
         src: "{{ rsync_src_config }}/nginx.conf"
         dest: /home/PruebaAnsible/Rsync/nginx.conf
-        ignore_errors: true
       when: copy_config
+      register: copy_nginx_conf_result
+      failed_when: copy_nginx_conf_result is failed and not 'No such file or directory' in copy_nginx_conf_result.msg
 
     - name: Copiar otras configuraciones si copy_other_config está activado
       synchronize:
@@ -39,5 +40,6 @@
         recursive: yes
         rsync_opts:
           - "--exclude=nginx.conf"
-        ignore_errors: true
       when: copy_other_config
+      register: copy_extras_result
+      failed_when: copy_extras_result is failed and not 'No such file or directory' in copy_extras_result.msg
