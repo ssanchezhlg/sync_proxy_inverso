@@ -8,8 +8,8 @@
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
     exclude_files: ['default', 'default-original', 'file2.conf']
-    copy_config: false
-    copy_other_config: false
+    copy_config: true
+    copy_other_config: true
 
   tasks:
     - name: Copiar carpeta usando rsync
