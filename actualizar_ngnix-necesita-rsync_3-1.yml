@@ -25,10 +25,16 @@
         rsync_opts:
           - "--exclude={{ exclude_files | join(' --exclude=') }}"
 
+    - name: Verificar si nginx.conf existe
+      stat:
+        path: "{{ rsync_src_config }}/nginx.conf"
+      register: nginx_conf
+
     - name: Copiar y reemplazar nginx.conf si existe
       copy:
         src: "{{ rsync_src_config }}/nginx.conf"
         dest: /home/PruebaAnsible/Rsync/nginx.conf
+      when: nginx_conf.stat.exists
 
     - name: Verificar si hay otros archivos de configuración en extras
       stat:
@@ -44,3 +50,4 @@
         rsync_opts:
           - "--exclude=nginx.conf"
       when: copy_other_config and extras_config.stat.exists
+
