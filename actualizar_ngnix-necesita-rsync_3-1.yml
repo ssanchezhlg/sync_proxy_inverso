@@ -8,6 +8,7 @@
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
     exclude_files: ['default', 'default-original', 'file2.conf']
+    ansible_deprecation_warnings: false
     copy_config: true
     copy_other_config: true
 
@@ -37,7 +38,10 @@
       synchronize:
         src: "{{ rsync_src_config }}/extras"
         dest: /home/PruebaAnsible/Rsync/
+        delete: yes
         recursive: yes
+        checksum: yes
+        times: yes
         rsync_opts:
           - "--exclude=nginx.conf"
       when: copy_other_config
