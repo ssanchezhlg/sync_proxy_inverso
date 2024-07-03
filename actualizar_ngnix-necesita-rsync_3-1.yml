@@ -38,4 +38,4 @@
         recursive: yes
         rsync_opts:
           - "--exclude=nginx.conf"
-      when: copy_other_config
+      when: copy_other_config and other_configs.matched > 0
