@@ -8,8 +8,8 @@
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
     exclude_files: ['default', 'default-original', 'file2.conf']
-    copy_config: true
-    copy_other_config: true
+    copy_config: false
+    copy_other_config: false
 
   tasks:
     - name: Copiar carpeta usando rsync
@@ -32,7 +32,7 @@
       when: copy_config
       ignore_errors: yes
       failed_when: false
-      
+
     - name: Copiar otras configuraciones si copy_other_config está activado
       synchronize:
         src: "{{ rsync_src_config }}/extras"
