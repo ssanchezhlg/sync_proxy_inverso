@@ -1,0 +1,8 @@
+htpasswd -c /etc/nginx/Claves/.htpasswd_ftp_ssl salbi
+htpasswd -c /etc/nginx/Claves/.htpasswd_ftp_ssl yoe
+
+    LOGIN es el nombre de usuario que deseas utilizar para autenticar en el indicador de inicio de sesión.
+
+
+
+yoe   Yoe2023*
