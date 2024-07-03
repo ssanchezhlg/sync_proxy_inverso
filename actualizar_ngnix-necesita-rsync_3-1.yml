@@ -2,8 +2,8 @@
   hosts: all
 #  become: yes
   vars:
-    rsync_src: sites-available-rsync
-    rsync_src_config: config
+    rsync_src: sites-available-rsync/
+    rsync_src_config: config/
     rsync_dest: /home/PruebaAnsible/Rsync/sites-available/
     sites_available_path: /home/PruebaAnsible/Rsync/sites-available
     sites_enabled_path: /home/PruebaAnsible/Rsync/sites-enabled
@@ -28,16 +28,14 @@
     - name: Copiar y reemplazar nginx.conf si copy_config está activado
       copy:
         src: "{{ rsync_src_config }}/nginx.conf"
-        dest: /home/PruebaAnsible/Rsync/nginx.conf
-        ignore_errors: true
+        dest: /etc/nginx/nginx.conf
       when: copy_config
 
     - name: Copiar otras configuraciones si copy_other_config está activado
       synchronize:
         src: "{{ rsync_src_config }}/extras"
-        dest: /home/PruebaAnsible/Rsync/
+        dest: /etc/nginx/
         recursive: yes
         rsync_opts:
           - "--exclude=nginx.conf"
-        ignore_errors: true
       when: copy_other_config
