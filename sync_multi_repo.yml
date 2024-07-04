@@ -1,0 +1,207 @@
+---
+- name: Clonar repositorio usando Ansible
+  hosts: CT_Docker_Git_VPN
+
+  vars_files:
+    - tarea_variables.yml
+
+  vars:
+    gitea_repo_local: "https://{{ gitea_repo.token }}@{{ gitea_repo.host }}/{{ gitea_repo.user }}/{{ gitea_repo.repo }}"
+    github_vps_repo_url: "https://{{ github_vps_repo.token }}@{{ github_vps_repo.host }}/{{ github_vps_repo.user }}/{{ github_vps_repo.repo }}"
+    github_oficial_repo_url: "https://{{ github_oficial_repo.token }}@{{ github_oficial_repo.host }}/{{ github_oficial_repo.user }}/{{ github_oficial_repo.repo }}"
+    github_InfomedHLG_repo_url: "https://{{ github_InfomedHLG_repo.token }}@{{ github_InfomedHLG_repo.host }}/{{ github_InfomedHLG_repo.user }}/{{ github_InfomedHLG_repo.repo }}"
+
+  tasks:
+    - name: Configurar identidad de usuario de Git
+      ansible.builtin.shell: |
+        git config --global user.name "{{ git_user_name }}"
+        git config --global user.email "{{ git_user_email }}"
+
+    - name: Configurar proxy si está habilitado
+      set_fact:
+        http_proxy: "http://{{ proxy.host }}:{{ proxy.port }}"
+        https_proxy: "http://{{ proxy.host }}:{{ proxy.port }}"
+      when: proxy.use_proxy
+
+    - name: Desconectar en caso de que se alla quedado conectado VPN para repositorio InfomedHLG
+      shell: killall openvpn
+      ignore_errors: yes      
+      when: github_InfomedHLG_repo.use_repo
+
+    - name: Eliminar la carpeta /tmp/repo en caso de que exista
+      ansible.builtin.file:
+        path: /tmp/repo
+        state: absent
+
+    - name: Iniciar VPN para repositorio InfomedHLG
+      command: openvpn --config {{ openvpn_profile.config_path }} --daemon
+      when: github_InfomedHLG_repo.use_repo
+
+    - name: Clonar el repositorio desde nuestro servidor Local
+      git:
+        repo: "{{ gitea_repo_local }}"
+        dest: /tmp/repo
+      when: gitea_repo.use_repo
+
+    - name: Agregar el repositorio de GitHub Alojado en el VPS
+      git_config:
+        name: remote.github_vps.url
+        value: "{{ github_vps_repo_url }}"
+        repo: /tmp/repo
+      when: github_vps_repo.use_repo
+
+    - name: Agregar el repositorio de GitHub Oficial
+      git_config:
+        name: remote.github_oficial.url
+        value: "{{ github_oficial_repo_url }}"
+        repo: /tmp/repo
+      when: github_oficial_repo.use_repo
+
+    - name: Agregar el repositorio de GitHub InfomedHLG
+      git_config:
+        name: remote.github_InfomedHLG.url
+        value: "{{ github_InfomedHLG_repo_url }}"
+        repo: /tmp/repo
+      when: github_InfomedHLG_repo.use_repo
+
+    - name: Verificar si hay ramas remotas para el repositorio Local
+      ansible.builtin.command: git ls-remote --heads "{{ gitea_repo_local }}"
+      register: gitea_repo_branches
+      when: gitea_repo.use_repo
+
+    - name: Crear y empujar rama main al repositorio Local si está vacío
+      ansible.builtin.shell: |
+        git checkout -b main
+        git push -u origin main
+      args:
+        chdir: /tmp/repo
+      when: gitea_repo.use_repo and gitea_repo_branches.stdout == ''
+
+    - name: Hacer pull de los cambios del repositorio Local si hay ramas
+      ansible.builtin.shell: |
+        git pull --rebase origin main
+      args:
+        chdir: /tmp/repo
+      when: gitea_repo.use_repo and gitea_repo_branches.stdout != ''
+
+    - name: Verificar si hay ramas remotas para el repositorio VPS
+      ansible.builtin.command: git ls-remote --heads "{{ github_vps_repo_url }}"
+      register: github_vps_repo_branches
+      when: github_vps_repo.use_repo
+
+    - name: Crear y empujar rama main al repositorio VPS si está vacío
+      ansible.builtin.shell: |
+        git checkout -b main
+        git push -u github_vps main
+      args:
+        chdir: /tmp/repo
+      when: github_vps_repo.use_repo and github_vps_repo_branches.stdout == ''
+
+    - name: Hacer pull de los cambios del repositorio VPS si hay ramas
+      ansible.builtin.shell: |
+        {% if proxy.use_proxy %}
+        export http_proxy="{{ http_proxy }}"
+        export https_proxy="{{ https_proxy }}"
+        {% endif %}
+        git pull --rebase github_vps main
+      args:
+        chdir: /tmp/repo
+      when: github_vps_repo.use_repo and github_vps_repo_branches.stdout != ''
+
+    - name: Verificar si hay ramas remotas para el repositorio Oficial
+      ansible.builtin.command: git ls-remote --heads "{{ github_oficial_repo_url }}"
+      register: github_oficial_repo_branches
+      when: github_oficial_repo.use_repo
+
+    - name: Crear y empujar rama main al repositorio Oficial si está vacío
+      ansible.builtin.shell: |
+        git checkout -b main
+        git push -u github_oficial main
+      args:
+        chdir: /tmp/repo
+      when: github_oficial_repo.use_repo and github_oficial_repo_branches.stdout == ''
+
+    - name: Hacer pull de los cambios del repositorio Oficial si hay ramas
+      ansible.builtin.shell: |
+        {% if proxy.use_proxy %}
+        export http_proxy="{{ http_proxy }}"
+        export https_proxy="{{ https_proxy }}"
+        {% endif %}
+        git pull --rebase github_oficial main
+      args:
+        chdir: /tmp/repo
+      when: github_oficial_repo.use_repo and github_oficial_repo_branches.stdout != ''
+
+    - name: Verificar si hay ramas remotas para el repositorio InfomedHLG
+      ansible.builtin.command: git ls-remote --heads "{{ github_InfomedHLG_repo_url }}"
+      register: github_InfomedHLG_repo_branches
+      when: github_InfomedHLG_repo.use_repo
+
+    - name: Crear y empujar rama main al repositorio InfomedHLG si está vacío
+      ansible.builtin.shell: |
+        git checkout -b main
+        git push -u github_InfomedHLG main
+      args:
+        chdir: /tmp/repo
+      when: github_InfomedHLG_repo.use_repo and github_InfomedHLG_repo_branches.stdout == ''
+
+    - name: Hacer pull de los cambios del repositorio InfomedHLG si hay ramas
+      ansible.builtin.shell: |
+        git pull --rebase github_InfomedHLG main
+      args:
+        chdir: /tmp/repo
+      when: github_InfomedHLG_repo.use_repo and github_InfomedHLG_repo_branches.stdout != ''
+
+    - name: Commit y push de cambios al repositorio Oficial
+      ansible.builtin.shell: |
+        {% if proxy.use_proxy %}
+        export http_proxy="{{ http_proxy }}"
+        export https_proxy="{{ https_proxy }}"
+        {% endif %}
+        git add .
+        git commit -m "Commit desde Ansible"
+        git pull --rebase github_oficial main
+        git push -u github_oficial main
+      args:
+        chdir: /tmp/repo
+      when: github_oficial_repo.use_repo
+
+    - name: Push de cambios al repositorio Local
+      ansible.builtin.shell: |
+        git pull --rebase origin main
+        git push -u origin main
+      args:
+        chdir: /tmp/repo
+      when: gitea_repo.use_repo
+
+    - name: Commit y Push de cambios al repositorio en el VPS
+      ansible.builtin.shell: |
+        {% if proxy.use_proxy %}
+        export http_proxy="{{ http_proxy }}"
+        export https_proxy="{{ https_proxy }}"
+        {% endif %}
+        git commit -m "Commit desde Ansible"
+        git pull --rebase github_vps main
+        git push -u github_vps main
+      args:
+        chdir: /tmp/repo
+      when: github_vps_repo.use_repo
+
+    - name: Commit y Push de cambios al repositorio InfomedHLG
+      ansible.builtin.shell: |
+        git commit -m "Commit desde Ansible"
+        git pull --rebase github_InfomedHLG main
+        git push -u github_InfomedHLG main
+      args:
+        chdir: /tmp/repo
+      when: github_InfomedHLG_repo.use_repo
+
+    - name: Desconectar VPN para repositorio InfomedHLG
+      shell: killall openvpn
+      ignore_errors: yes
+      when: github_InfomedHLG_repo.use_repo
+
+    - name: Eliminar la carpeta /tmp/repo
+      ansible.builtin.file:
+        path: /tmp/repo
+        state: absent
