@@ -2,8 +2,7 @@
 - name: Clonar repositorio usando Ansible
   hosts: CT_Docker_Git_VPN
 
-  vars_files:
-    - tarea_variables.yml
+
 
   vars:
     gitea_repo_local: "https://{{ gitea_repo.token }}@{{ gitea_repo.host }}/{{ gitea_repo.user }}/{{ gitea_repo.repo }}"
